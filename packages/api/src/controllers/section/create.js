@@ -7,7 +7,7 @@ module.exports = async (req, res) => {
   let section_end = req.body.section_end;
   let section_day = req.body.section_day;
   let subject_id = req.body.subject_id;
-  let teacher_id = req.body.teacher_id;
+  let teacher_id = req.account_id;
   let semester_id = req.body.semester_id;
 
   //ตรวจสอบข้อมูลที่ส่งมาจาก client ว่ามีข้อมูลหรือไม่

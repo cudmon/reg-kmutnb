@@ -14,13 +14,6 @@ const theme = {
   shape: {
     borderRadius: 5,
   },
-  components: {
-    MuiButtonBase: {
-      defaultProps: {
-        disableRipple: true,
-      },
-    },
-  },
 };
 
 export const studentTheme = createTheme({

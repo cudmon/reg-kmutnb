@@ -5,6 +5,7 @@ const route = Router();
 route.use("/auth", require("./auth"));
 route.use("/section", require("./section"));
 route.use("/student", require("./student"));
+route.use("/subject", require("./subject"));
 route.use("/registration", require("./registration"));
 
 route.all("*", (req, res) => {

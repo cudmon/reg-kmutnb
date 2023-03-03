@@ -1,7 +1,7 @@
 const db = require("../../modules/database");
 
 module.exports = async (req, res) => {
-  let student_id = req.params.student_id;
+  let student_id = req.params.id;
   // SELECT  ข้อมูล  จากตาราง registration  ดูว่านักเรียน ลงทะเบียน หรือไม่
   db.execute(
     "SELECT  * FROM  registration WHERE student_id = ?",

@@ -1,3 +1,4 @@
+const bcrypt = require("bcryptjs");
 const db = require("../../modules/database");
 
 module.exports = async (req, res) => {

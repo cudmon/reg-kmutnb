@@ -9,10 +9,10 @@ module.exports = async (req, res) => {
         console.log(result[0]);
         if (!result[0]) {
           //console.log("ไม่มีวิชา")
-          res.status(404).send({
+          res.status(403).send({
             error: {
-              code: 404,
-              message: "Not Found",
+              code: 403,
+              message: "Forbidden",
             },
           });
         } else {

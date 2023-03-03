@@ -88,8 +88,6 @@ export function StudentClassList() {
     } catch {}
   };
 
-  
-
   useEffect(() => {
     getClass();
   }, []);
