@@ -1,9 +1,9 @@
-import { useAuthStore } from "../../../store/auth";
+import { useAuth } from "@/store/auth";
 import { Menu, AccountCircle } from "@mui/icons-material";
 import { AppBar, IconButton, Toolbar, Typography } from "@mui/material";
 
-export function StudentNavbar({ toggle }) {
-  const name = useAuthStore((state) => state.name);
+export default function TeacherNavbar({ toggle }) {
+  const name = useAuth((state) => state.name);
 
   return (
     <AppBar
@@ -25,7 +25,7 @@ export function StudentNavbar({ toggle }) {
         <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
           ระบบลงทะเบียนเรียน
         </Typography>
-        <IconButton size="large" color="inherit" sx={{ mr: 1 }}>
+        <IconButton size="medium" color="inherit" sx={{ mr: 1 }}>
           <AccountCircle />
         </IconButton>
         <Typography fontWeight={500}>{name}</Typography>

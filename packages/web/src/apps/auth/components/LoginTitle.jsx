@@ -1,9 +1,20 @@
-import { Typography } from "@mui/material";
+import { Typography, Box } from "@mui/material";
 
-export function LoginTitle() {
+export default function LoginTitle() {
   return (
-    <Typography marginBottom={4} align="center" variant="h3">
-      เข้าสู่ระบบ
-    </Typography>
+    <>
+      <Box marginY={4} textAlign="center">
+        <img src="/logo.jpg" alt="Logo" width="70%" />
+      </Box>
+      <Typography
+        color="primary"
+        fontSize={40}
+        marginBlock={8}
+        align="center"
+        variant="h4"
+      >
+        เข้าสู่ระบบ
+      </Typography>
+    </>
   );
 }

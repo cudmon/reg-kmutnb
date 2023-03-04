@@ -8,7 +8,7 @@ import {
 } from "@mui/material";
 import { useState } from "react";
 
-export function StudentWithdraw({ handler, id }) {
+export default function TeacherDeleteStudent({ handler, id }) {
   const [status, setStatus] = useState(false);
 
   const open = () => {
@@ -19,7 +19,7 @@ export function StudentWithdraw({ handler, id }) {
     setStatus(false);
   };
 
-  const withdraw = async () => {
+  const remove = async () => {
     await handler(id);
 
     setStatus(false);
@@ -27,11 +27,11 @@ export function StudentWithdraw({ handler, id }) {
 
   return (
     <>
-      <Button size="small" color="error" onClick={open}>
-        ถอนวิชาเรียน
+      <Button color="error" onClick={open}>
+        ลบ
       </Button>
       <Dialog open={status} onClose={close}>
-        <DialogTitle>ถอนวิชา</DialogTitle>
+        <DialogTitle>ลบนักเรียน</DialogTitle>
         <DialogContent sx={{ minWidth: 300 }}>
           <DialogContentText>คุณแน่ใจหรือไม่</DialogContentText>
         </DialogContent>
@@ -43,9 +43,9 @@ export function StudentWithdraw({ handler, id }) {
             color="error"
             variant="contained"
             disableElevation
-            onClick={withdraw}
+            onClick={remove}
           >
-            ถอนวิชาเรียน
+            ลบ
           </Button>
         </DialogActions>
       </Dialog>

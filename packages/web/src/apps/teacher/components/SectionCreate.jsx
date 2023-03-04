@@ -1,3 +1,6 @@
+import { http } from "@/plugins/http";
+import { useAuth } from "@/store/auth";
+import { useEffect, useState } from "react";
 import {
   Button,
   Dialog,
@@ -10,11 +13,8 @@ import {
   Select,
   TextField,
 } from "@mui/material";
-import { useAuthStore } from "../../../store/auth";
-import { useEffect, useState } from "react";
-import axios from "../../../plugins/axios";
 
-export function TeacherAddSection({ handler }) {
+export default function TeacherAddSection({ handler }) {
   const [status, setStatus] = useState(false);
   const [number, setNumber] = useState("");
   const [start, setStart] = useState("");
@@ -22,7 +22,7 @@ export function TeacherAddSection({ handler }) {
   const [day, setDay] = useState("");
   const [subjectId, setSubjectId] = useState("");
   const [subject, setSubject] = useState([]);
-  const token = useAuthStore((state) => state.token);
+  const token = useAuth((state) => state.token);
 
   const open = () => {
     setStatus(true);
@@ -47,7 +47,7 @@ export function TeacherAddSection({ handler }) {
 
   useEffect(() => {
     (async () => {
-      const { data } = await axios.get("/subject", {
+      const { data } = await http.get("/subject", {
         headers: {
           "x-access-token": token,
         },

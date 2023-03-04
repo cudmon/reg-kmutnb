@@ -1,14 +1,15 @@
-import axios from "../../../plugins/axios";
+import { http } from "@/plugins/http";
 import { DataGrid } from "@mui/x-data-grid";
 import { useEffect, useState } from "react";
-import { useAuthStore } from "../../../store/auth";
+import { useAuth } from "@/store/auth";
 import { Box, Button, Stack, Typography } from "@mui/material";
-import { TeacherAddStudent } from "../components/TeacherAddStudent";
-import { TeacherDeleteStudent } from "../components/TeacherDeleteStudent";
 
-export function TeacherStudentPage() {
+import StudentCreate from "../components/StudentCreate";
+import StudentDelete from "../components/StudentDelete";
+
+export default function TeacherStudentPage() {
   const [rows, setRows] = useState([]);
-  const token = useAuthStore((state) => state.token);
+  const token = useAuth((state) => state.token);
 
   const columns = [
     {
@@ -49,17 +50,14 @@ export function TeacherStudentPage() {
       renderCell: (params) => (
         <Box>
           <Button color="warning">แก้ไข</Button>
-          <TeacherDeleteStudent
-            id={params.row.student_id}
-            handler={deleteStudent}
-          />
+          <StudentDelete id={params.row.student_id} handler={deleteStudent} />
         </Box>
       ),
     },
   ];
 
   const getStudent = async () => {
-    const { data } = await axios.get("/student", {
+    const { data } = await http.get("/student", {
       headers: {
         "x-access-token": token,
       },
@@ -70,7 +68,7 @@ export function TeacherStudentPage() {
 
   const deleteStudent = async (id) => {
     try {
-      await axios.delete(`/student/${id}`, {
+      await http.delete(`/student/${id}`, {
         headers: {
           "x-access-token": token,
         },
@@ -82,7 +80,7 @@ export function TeacherStudentPage() {
 
   const addStudent = async (data) => {
     try {
-      await axios.post("/student", data, {
+      await http.post("/student", data, {
         headers: {
           "x-access-token": token,
         },
@@ -107,7 +105,7 @@ export function TeacherStudentPage() {
         <Typography fontWeight={500} variant="h5">
           นักเรียน
         </Typography>
-        <TeacherAddStudent handler={addStudent} />
+        <StudentCreate handler={addStudent} />
       </Stack>
       <DataGrid
         autoHeight

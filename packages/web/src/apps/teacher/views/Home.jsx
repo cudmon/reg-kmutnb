@@ -1,14 +1,15 @@
-import axios from "../../../plugins/axios";
+import { http } from "@/plugins/http";
+import { useAuth } from "@/store/auth";
 import { DataGrid } from "@mui/x-data-grid";
 import { useEffect, useState } from "react";
-import { useAuthStore } from "../../../store/auth";
 import { Box, Button, Stack, Typography } from "@mui/material";
-import { TeacherDeleteSection } from "../components/TeacherDeleteSection";
-import { TeacherAddSection } from "../components/TeacherAddSection";
 
-export function TeacherHomePage() {
+import SectionDelete from "../components/SectionDelete";
+import SectionCreate from "../components/SectionCreate";
+
+export default function TeacherHomePage() {
   const [rows, setRows] = useState([]);
-  const token = useAuthStore((state) => state.token);
+  const token = useAuth((state) => state.token);
 
   const columns = [
     {
@@ -77,10 +78,7 @@ export function TeacherHomePage() {
       renderCell: (params) => (
         <Box>
           <Button color="warning">แก้ไข</Button>
-          <TeacherDeleteSection
-            id={params.row.section_id}
-            handler={deleteSection}
-          />
+          <SectionDelete id={params.row.section_id} handler={deleteSection} />
         </Box>
       ),
     },
@@ -88,7 +86,7 @@ export function TeacherHomePage() {
 
   const getSection = async () => {
     try {
-      const { data } = await axios.get("/section", {
+      const { data } = await http.get("/section", {
         headers: {
           "x-access-token": token,
         },
@@ -100,7 +98,7 @@ export function TeacherHomePage() {
 
   const deleteSection = async (id) => {
     try {
-      await axios.delete(`/section/${id}`, {
+      await http.delete(`/section/${id}`, {
         headers: {
           "x-access-token": token,
         },
@@ -117,7 +115,7 @@ export function TeacherHomePage() {
 
   const addSection = async (data) => {
     try {
-      await axios.post("/section", data, {
+      await http.post("/section", data, {
         headers: {
           "x-access-token": token,
         },
@@ -142,7 +140,7 @@ export function TeacherHomePage() {
         <Typography fontWeight={500} variant="h5">
           ตอนเรียน
         </Typography>
-        <TeacherAddSection handler={addSection} />
+        <SectionCreate handler={addSection} />
       </Stack>
       <DataGrid
         autoHeight

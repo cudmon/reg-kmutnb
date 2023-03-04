@@ -1,5 +1,5 @@
-import { Home, Logout } from "@mui/icons-material";
-import { useAuthStore } from "../../../store/auth";
+import { Home, Logout, School } from "@mui/icons-material";
+import { useAuth } from "@/store/auth";
 import { Link, useLocation } from "react-router-dom";
 import {
   Box,
@@ -19,11 +19,16 @@ const links = [
     href: "/",
     icon: <Home />,
   },
+  {
+    label: "นักเรียน",
+    href: "/student",
+    icon: <School />,
+  },
 ];
 
-export function StudentDrawer({ opened, mobile, width, toggle }) {
+export default function TeacherDrawer({ opened, mobile, width, toggle }) {
   const { pathname } = useLocation();
-  const authStore = useAuthStore((state) => state.update);
+  const authStore = useAuth((state) => state.update);
 
   const logout = () => {
     authStore({

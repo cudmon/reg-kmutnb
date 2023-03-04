@@ -1,15 +1,15 @@
 import { createTheme } from "@mui/material";
-import { blue, grey, indigo, teal } from "@mui/material/colors";
+import { blue, blueGrey, indigo, teal } from "@mui/material/colors";
 
 const MODE = "light";
 
 const theme = {
   typography: {
     fontFamily: "Kanit",
-    fontWeightRegular: 500,
-    fontWeightBold: 700,
-    fontWeightLight: 400,
-    fontWeightMedium: 600,
+    fontWeightRegular: 400,
+    fontWeightBold: 600,
+    fontWeightLight: 300,
+    fontWeightMedium: 500,
   },
   shape: {
     borderRadius: 5,
@@ -19,7 +19,7 @@ const theme = {
 export const studentTheme = createTheme({
   palette: {
     primary: indigo,
-    secondary: grey,
+    secondary: blueGrey,
     mode: MODE,
   },
   ...theme,
@@ -28,7 +28,7 @@ export const studentTheme = createTheme({
 export const teacherTheme = createTheme({
   palette: {
     primary: teal,
-    secondary: grey,
+    secondary: blueGrey,
     mode: MODE,
   },
   ...theme,
@@ -37,8 +37,11 @@ export const teacherTheme = createTheme({
 export const loginTheme = createTheme({
   palette: {
     primary: blue,
-    secondary: grey,
+    secondary: blueGrey,
     mode: MODE,
+    background: {
+      default: "#f1f5f9",
+    },
   },
   ...theme,
 });

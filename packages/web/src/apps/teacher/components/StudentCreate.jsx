@@ -12,7 +12,7 @@ import {
 } from "@mui/material";
 import { useState } from "react";
 
-export function TeacherAddStudent({ handler }) {
+export default function TeacherAddStudent({ handler }) {
   const [status, setStatus] = useState(false);
   const [prefix, setPrefix] = useState("");
   const [firstName, setFirstName] = useState("");

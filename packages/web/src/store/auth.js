@@ -1,7 +1,7 @@
 import { create } from "zustand";
 import { persist, createJSONStorage } from "zustand/middleware";
 
-export const useAuthStore = create(
+export const useAuth = create(
   persist(
     (set) => ({
       name: null,
@@ -16,7 +16,7 @@ export const useAuthStore = create(
         })),
     }),
     {
-      name: "auth-store",
+      name: "auth",
       storage: createJSONStorage(() => sessionStorage),
     }
   )

@@ -8,7 +8,7 @@ import {
 } from "@mui/material";
 import { useState } from "react";
 
-export function TeacherDeleteStudent({ handler, id }) {
+export default function TeacherDeleteSection({ handler, id }) {
   const [status, setStatus] = useState(false);
 
   const open = () => {
@@ -31,7 +31,7 @@ export function TeacherDeleteStudent({ handler, id }) {
         ลบ
       </Button>
       <Dialog open={status} onClose={close}>
-        <DialogTitle>ลบนักเรียน</DialogTitle>
+        <DialogTitle>ลบตอนเรียน</DialogTitle>
         <DialogContent sx={{ minWidth: 300 }}>
           <DialogContentText>คุณแน่ใจหรือไม่</DialogContentText>
         </DialogContent>
