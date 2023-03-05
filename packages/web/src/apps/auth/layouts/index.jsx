@@ -7,7 +7,7 @@ export default function LoginLayout() {
     <ThemeProvider theme={theme}>
       <CssBaseline />
       <Container maxWidth="sm">
-        <Box px={4} py={20}>
+        <Box px={4} py={14}>
           <Outlet />
         </Box>
       </Container>

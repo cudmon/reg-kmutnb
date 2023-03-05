@@ -14,7 +14,7 @@ import {
   TextField,
 } from "@mui/material";
 
-export default function TeacherAddSection({ handler }) {
+export default function SectionCreate({ handler }) {
   const [status, setStatus] = useState(false);
   const [number, setNumber] = useState("");
   const [start, setStart] = useState("");

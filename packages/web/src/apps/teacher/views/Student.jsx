@@ -1,15 +1,14 @@
-import { http } from "@/plugins/http";
 import { DataGrid } from "@mui/x-data-grid";
 import { useEffect, useState } from "react";
-import { useAuth } from "@/store/auth";
-import { Box, Button, Stack, Typography } from "@mui/material";
+import { Box, Button } from "@mui/material";
+import { getStudents } from "../services/student";
+import { StudentContext } from "../context/StudentContext";
 
-import StudentCreate from "../components/StudentCreate";
+import StudentHeader from "../components/StudentHeader";
 import StudentDelete from "../components/StudentDelete";
 
 export default function TeacherStudentPage() {
   const [rows, setRows] = useState([]);
-  const token = useAuth((state) => state.token);
 
   const columns = [
     {
@@ -47,66 +46,43 @@ export default function TeacherStudentPage() {
       align: "center",
       headerAlign: "center",
       width: 200,
-      renderCell: (params) => (
+      renderCell: ({ row }) => (
         <Box>
           <Button color="warning">แก้ไข</Button>
-          <StudentDelete id={params.row.student_id} handler={deleteStudent} />
+          <StudentDelete
+            id={row.student_id}
+            sid={row.student_sid}
+            prefix={row.student_prefix}
+            fname={row.student_first_name}
+            lname={row.student_last_name}
+            faculty={row.faculty_name}
+          />
         </Box>
       ),
     },
   ];
 
-  const getStudent = async () => {
-    const { data } = await http.get("/student", {
-      headers: {
-        "x-access-token": token,
-      },
-    });
-
-    setRows(data.student);
-  };
-
-  const deleteStudent = async (id) => {
-    try {
-      await http.delete(`/student/${id}`, {
-        headers: {
-          "x-access-token": token,
-        },
-      });
-
-      getStudent();
-    } catch (e) {}
-  };
-
-  const addStudent = async (data) => {
-    try {
-      await http.post("/student", data, {
-        headers: {
-          "x-access-token": token,
-        },
-      });
-
-      getStudent();
-    } catch {}
-  };
-
   useEffect(() => {
-    getStudent();
+    (async () => {
+      const res = await getStudents();
+
+      if (res) {
+        setRows(res.student);
+      }
+    })();
   }, []);
 
+  const refresh = async () => {
+    const res = await getStudents();
+
+    if (res) {
+      setRows(res.student);
+    }
+  };
+
   return (
-    <>
-      <Stack
-        mb={3}
-        direction="row"
-        alignItems="center"
-        justifyContent="space-between"
-      >
-        <Typography fontWeight={500} variant="h5">
-          นักเรียน
-        </Typography>
-        <StudentCreate handler={addStudent} />
-      </Stack>
+    <StudentContext.Provider value={refresh}>
+      <StudentHeader />
       <DataGrid
         autoHeight
         getRowId={(row) => row.student_id}
@@ -117,6 +93,6 @@ export default function TeacherStudentPage() {
         pageSize={10}
         rowsPerPageOptions={[10]}
       ></DataGrid>
-    </>
+    </StudentContext.Provider>
   );
 }

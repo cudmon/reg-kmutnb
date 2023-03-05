@@ -20,7 +20,7 @@ const links = [
     icon: <Home />,
   },
   {
-    label: "นักเรียน",
+    label: "นักศึกษา",
     href: "/student",
     icon: <School />,
   },

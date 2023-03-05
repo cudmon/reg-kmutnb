@@ -1,15 +1,14 @@
-import { http } from "@/plugins/http";
-import { useAuth } from "@/store/auth";
 import { DataGrid } from "@mui/x-data-grid";
 import { useEffect, useState } from "react";
-import { Box, Button, Stack, Typography } from "@mui/material";
+import { Box, Button } from "@mui/material";
+import { getSections } from "../services/section";
+import { SectionContext } from "../context/SectionContext";
 
 import SectionDelete from "../components/SectionDelete";
-import SectionCreate from "../components/SectionCreate";
+import SectionHeader from "../components/SectionHeader";
 
 export default function TeacherHomePage() {
   const [rows, setRows] = useState([]);
-  const token = useAuth((state) => state.token);
 
   const columns = [
     {
@@ -43,9 +42,7 @@ export default function TeacherHomePage() {
       headerName: "วัน",
       align: "center",
       headerAlign: "center",
-      valueGetter: (params) => {
-        const day = params.row.section_day;
-
+      valueGetter: ({ row }) => {
         return [
           "อาทิตย์",
           "จันทร์",
@@ -54,7 +51,7 @@ export default function TeacherHomePage() {
           "พฤหัสบดี",
           "ศุกร์",
           "เสาร์",
-        ][day - 1];
+        ][row.section_day - 1];
       },
     },
     {
@@ -75,73 +72,36 @@ export default function TeacherHomePage() {
       align: "center",
       headerAlign: "center",
       width: 200,
-      renderCell: (params) => (
+      renderCell: ({ row }) => (
         <Box>
           <Button color="warning">แก้ไข</Button>
-          <SectionDelete id={params.row.section_id} handler={deleteSection} />
+          <SectionDelete id={row.section_id} />
         </Box>
       ),
     },
   ];
 
-  const getSection = async () => {
-    try {
-      const { data } = await http.get("/section", {
-        headers: {
-          "x-access-token": token,
-        },
-      });
+  useEffect(() => {
+    (async () => {
+      const res = await getSections();
 
-      setRows(data.section);
-    } catch {}
-  };
-
-  const deleteSection = async (id) => {
-    try {
-      await http.delete(`/section/${id}`, {
-        headers: {
-          "x-access-token": token,
-        },
-      });
-
-      getSection();
-    } catch (e) {
-      console.log(e);
-      if (e.response.status === 403) {
-        console.log("Not allow");
+      if (res) {
+        setRows(res.section);
       }
+    })();
+  }, []);
+
+  const refresh = async () => {
+    const res = await getStudents();
+
+    if (res) {
+      setRows(res.student);
     }
   };
 
-  const addSection = async (data) => {
-    try {
-      await http.post("/section", data, {
-        headers: {
-          "x-access-token": token,
-        },
-      });
-
-      getSection();
-    } catch {}
-  };
-
-  useEffect(() => {
-    getSection();
-  }, []);
-
   return (
-    <>
-      <Stack
-        mb={3}
-        direction="row"
-        alignItems="center"
-        justifyContent="space-between"
-      >
-        <Typography fontWeight={500} variant="h5">
-          ตอนเรียน
-        </Typography>
-        <SectionCreate handler={addSection} />
-      </Stack>
+    <SectionContext.Provider value={refresh}>
+      <SectionHeader />
       <DataGrid
         autoHeight
         getRowId={(row) => row.section_id}
@@ -152,6 +112,6 @@ export default function TeacherHomePage() {
         pageSize={10}
         rowsPerPageOptions={[10]}
       ></DataGrid>
-    </>
+    </SectionContext.Provider>
   );
 }

@@ -1,83 +1,136 @@
-import { useState } from "react";
+import { Context } from "../context";
+import { useContext, useEffect, useState } from "react";
+import { getRegistration, getSections, getSubjects, regis } from "../services";
 import {
   Box,
   Button,
   Dialog,
-  DialogActions,
   DialogContent,
   DialogTitle,
-  TextField,
+  FormControl,
+  InputLabel,
+  MenuItem,
+  Select,
 } from "@mui/material";
 
-export default function StudentSectionRegis({ handler }) {
-  const [status, setOpened] = useState(false);
-  const [subjectCode, setSubjectCode] = useState("");
-  const [sectionNumber, setSectionNumber] = useState("");
+const DialogForm = ({ value, onChange }) => {
+  const [subjects, setSubjects] = useState([]);
+  const [sections, setSections] = useState([]);
 
-  const open = () => {
-    setOpened(true);
+  useEffect(() => {
+    (async () => {
+      const registration = await getRegistration();
+      const sections = await getSections();
+
+      setSubjects(sections.section);
+      setSections(sections.section);
+    })();
+  }, []);
+
+  return (
+    <Box align="center">
+      <FormControl margin="normal" size="small" fullWidth>
+        <InputLabel id="subject-label">วิชา</InputLabel>
+        <Select
+          labelId="subject-label"
+          id="subject"
+          value={value.subject}
+          label="วิชา"
+          onChange={onChange}
+          name="subject"
+        >
+          {subjects.map((subject) => (
+            <MenuItem key={subject.subject_id} value={subject.subject_code}>
+              {subject.subject_name}
+            </MenuItem>
+          ))}
+        </Select>
+      </FormControl>
+      <FormControl margin="normal" size="small" fullWidth>
+        <InputLabel id="section-label">ตอนเรียน</InputLabel>
+        <Select
+          labelId="section-label"
+          id="section"
+          value={value.section}
+          label="ตอนเรียน"
+          onChange={onChange}
+          name="section"
+        >
+          {sections.map((section) => (
+            <MenuItem key={section.section_id} value={section.section_number}>
+              {section.section_number}
+            </MenuItem>
+          ))}
+        </Select>
+      </FormControl>
+    </Box>
+  );
+};
+
+const DialogAction = ({ onClose, onSubmit }) => {
+  return (
+    <Box
+      marginTop={4}
+      display="flex"
+      alignItems="center"
+      justifyContent="space-between"
+    >
+      <Button color="secondary" onClick={onClose}>
+        ยกเลิก
+      </Button>
+      <Button color="success" variant="contained" onClick={onSubmit}>
+        ลงทะเบียน
+      </Button>
+    </Box>
+  );
+};
+
+export default function SectionRegis() {
+  const sync = useContext(Context);
+  const [opened, setOpened] = useState(false);
+
+  const [input, setInput] = useState({
+    subject: "",
+    section: "",
+  });
+
+  const dialog = {
+    open: () => setOpened(true),
+    close: () => setOpened(false),
   };
 
-  const close = () => {
-    setOpened(false);
+  const handler = async () => {
+    const res = await regis(input.subject, input.section);
+
+    if (res) {
+      sync();
+      dialog.close();
+      setInput({ subject: "", section: "" });
+    }
   };
 
-  const addClass = async () => {
-    await handler(subjectCode, sectionNumber);
-
-    setOpened(false);
+  const handleInput = (event) => {
+    setInput({
+      ...input,
+      [event.target.name]: event.target.value,
+    });
   };
 
   return (
     <>
       <Button
-        disableElevation
         size="large"
-        onClick={open}
+        onClick={dialog.open}
         variant="contained"
         color="primary"
       >
         ลงทะเบียน
       </Button>
-      <Dialog open={status} onClose={close}>
+      <Dialog open={opened} onClose={dialog.close}>
         <DialogTitle align="center">ลงทะเบียน</DialogTitle>
         <DialogContent sx={{ width: 400 }}>
-          <Box align="center">
-            <TextField
-              size="small"
-              fullWidth
-              label="รหัสวิชา"
-              margin="normal"
-              value={subjectCode}
-              onChange={(e) => setSubjectCode(e.target.value)}
-            />
-            <TextField
-              size="small"
-              fullWidth
-              value={sectionNumber}
-              margin="normal"
-              label="ตอนเรียน"
-              onChange={(e) => setSectionNumber(e.target.value)}
-            />
-          </Box>
-          <Box
-            marginTop={4}
-            display="flex"
-            justifyContent="space-between"
-            alignItems="center"
-          >
-            <Button color="secondary" onClick={() => setOpened(false)}>
-              ยกเลิก
-            </Button>
-            <Button
-              color="success"
-              variant="contained"
-              disableElevation
-              onClick={addClass}
-            >
-              ลงทะเบียน
-            </Button>
-          </Box>
+          <DialogForm value={input} onChange={handleInput} />
+          <DialogAction onClose={dialog.close} onSubmit={handler} />
         </DialogContent>
       </Dialog>
     </>

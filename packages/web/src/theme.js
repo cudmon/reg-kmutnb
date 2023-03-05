@@ -4,15 +4,39 @@ import { blue, blueGrey, indigo, teal } from "@mui/material/colors";
 const MODE = "light";
 
 const theme = {
-  typography: {
-    fontFamily: "Kanit",
-    fontWeightRegular: 400,
-    fontWeightBold: 600,
-    fontWeightLight: 300,
-    fontWeightMedium: 500,
+  components: {
+    MuiButtonBase: {
+      defaultProps: {
+        disableTouchRipple: true,
+      },
+    },
+    MuiButton: {
+      defaultProps: {
+        disableElevation: true,
+      },
+    },
+    MuiAppBar: {
+      defaultProps: {
+        elevation: 0,
+      },
+    },
   },
   shape: {
-    borderRadius: 5,
+    borderRadius: 3,
+  },
+  typography: {
+    fontFamily: "Kanit",
+  },
+  transitions: {
+    duration: {
+      shortest: 125,
+      shorter: 175,
+      short: 225,
+      standard: 275,
+      complex: 325,
+      enteringScreen: 200,
+      leavingScreen: 150,
+    },
   },
 };
 

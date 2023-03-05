@@ -27,7 +27,7 @@ export default function LoginBody() {
     setIsEmpty(false);
 
     try {
-      const { data } = await http.post("/auth/login", {
+      const { data } = await http().post("/auth/login", {
         username,
         password,
       });

@@ -8,7 +8,7 @@ import {
 } from "@mui/material";
 import { useState } from "react";
 
-export default function TeacherDeleteSection({ handler, id }) {
+export default function SectionDelete({ handler, id }) {
   const [status, setStatus] = useState(false);
 
   const open = () => {

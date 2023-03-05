@@ -12,7 +12,7 @@ import {
 } from "@mui/material";
 import { useState } from "react";
 
-export default function TeacherAddStudent({ handler }) {
+export default function StudentCreate({ handler }) {
   const [status, setStatus] = useState(false);
   const [prefix, setPrefix] = useState("");
   const [firstName, setFirstName] = useState("");
@@ -47,7 +47,7 @@ export default function TeacherAddStudent({ handler }) {
         เพิ่ม
       </Button>
       <Dialog open={status} onClose={close}>
-        <DialogTitle>เพิ่มนักเรียน</DialogTitle>
+        <DialogTitle>เพิ่มนักศึกษา</DialogTitle>
         <DialogContent sx={{ minWidth: 300 }}>
           <FormControl sx={{ marginBlock: 1.3 }} fullWidth>
             <InputLabel id="prefix">คำนำหน้า</InputLabel>

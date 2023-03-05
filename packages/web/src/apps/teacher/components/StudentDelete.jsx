@@ -1,53 +1,102 @@
+import { useContext, useState } from "react";
+import { deleteStudent } from "../services/student";
+import { StudentContext } from "../context/StudentContext";
 import {
+  Box,
   Button,
   Dialog,
-  DialogActions,
   DialogContent,
-  DialogContentText,
   DialogTitle,
+  TextField,
 } from "@mui/material";
-import { useState } from "react";
 
-export default function TeacherDeleteStudent({ handler, id }) {
-  const [status, setStatus] = useState(false);
+const forms = [
+  { label: "รหัสนักศึกษา", name: "sid" },
+  { label: "ชื่อสกุล", name: "name" },
+  { label: "คณะ", name: "faculty" },
+];
 
-  const open = () => {
-    setStatus(true);
+const DialogForm = (props) => {
+  return (
+    <Box paddingTop={2} align="center">
+      {forms.map((form) => (
+        <TextField
+          key={form.name}
+          fullWidth
+          size="small"
+          margin="normal"
+          label={form.label}
+          value={props[form.name]}
+          inputProps={{ readOnly: true }}
+        />
+      ))}
+    </Box>
+  );
+};
+
+const DialogAction = ({ onClose, onSubmit }) => {
+  return (
+    <Box
+      marginTop={4}
+      display="flex"
+      alignItems="center"
+      justifyContent="space-between"
+    >
+      <Button color="secondary" onClick={onClose}>
+        ยกเลิก
+      </Button>
+      <Button
+        color="error"
+        disableElevation
+        onClick={onSubmit}
+        variant="contained"
+      >
+        ลบ
+      </Button>
+    </Box>
+  );
+};
+
+export default function StudentDelete({
+  id,
+  sid,
+  prefix,
+  fname,
+  lname,
+  faculty,
+}) {
+  const sync = useContext(StudentContext);
+  const [opened, setOpened] = useState(false);
+
+  const dialog = {
+    open: () => setOpened(true),
+    close: () => setOpened(false),
   };
 
-  const close = () => {
-    setStatus(false);
-  };
+  const handler = async () => {
+    const res = await deleteStudent(id);
 
-  const remove = async () => {
-    await handler(id);
-
-    setStatus(false);
+    if (res) {
+      sync();
+      dialog.close();
+    }
   };
 
   return (
     <>
-      <Button color="error" onClick={open}>
+      <Button color="error" onClick={dialog.open}>
         ลบ
       </Button>
-      <Dialog open={status} onClose={close}>
-        <DialogTitle>ลบนักเรียน</DialogTitle>
-        <DialogContent sx={{ minWidth: 300 }}>
-          <DialogContentText>คุณแน่ใจหรือไม่</DialogContentText>
+      <Dialog open={opened} onClose={dialog.close}>
+        <DialogTitle align="center">ลบนักศึกษา</DialogTitle>
+        <DialogContent>
+          <DialogForm
+            sid={id}
+            faculty={faculty}
+            name={`${prefix}${fname} ${lname}`}
+          />
+          <DialogAction onClose={dialog.close} onSubmit={handler} />
         </DialogContent>
-        <DialogActions>
-          <Button color="secondary" onClick={close}>
-            ยกเลิก
-          </Button>
-          <Button
-            color="error"
-            variant="contained"
-            disableElevation
-            onClick={remove}
-          >
-            ลบ
-          </Button>
-        </DialogActions>
       </Dialog>
     </>
   );
