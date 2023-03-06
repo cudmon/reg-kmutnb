@@ -4,6 +4,6 @@ const subject = require("../controllers/subject");
 
 const route = Router();
 
-route.get("/", [auth.verifyToken, auth.isTeacher], subject.all);
+route.get("/", [auth.verifyToken], subject.all);
 
 module.exports = route;

@@ -17,7 +17,9 @@ export const deleteStudent = async (id) => {
   const token = useAuth.getState().token;
 
   try {
-    return await http(token).delete(`/students/${id}`);
+    await http(token).delete(`/students/${id}`);
+
+    return 200;
   } catch (e) {
     return false;
   }
@@ -28,6 +30,16 @@ export const createStudent = async (data) => {
 
   try {
     return await http(token).post("/students", data);
+  } catch {
+    return false;
+  }
+};
+
+export const updateStudent = async (id, data) => {
+  const token = useAuth.getState().token;
+
+  try {
+    return await http(token).patch(`/students/${id}`, data);
   } catch {
     return false;
   }

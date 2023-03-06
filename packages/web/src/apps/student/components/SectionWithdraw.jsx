@@ -45,12 +45,7 @@ const DialogAction = ({ onClose, onSubmit }) => {
       <Button color="secondary" onClick={onClose}>
         ยกเลิก
       </Button>
-      <Button
-        color="error"
-        disableElevation
-        onClick={onSubmit}
-        variant="contained"
-      >
+      <Button color="error" onClick={onSubmit} variant="contained">
         ถอนวิชาเรียน
       </Button>
     </Box>
@@ -58,7 +53,7 @@ const DialogAction = ({ onClose, onSubmit }) => {
 };
 
 export default function SectionWithdraw({ id, subject, section, teacher }) {
-  const sync = useContext(Context);
+  const context = useContext(Context);
   const [opened, setOpened] = useState(false);
 
   const dialog = {
@@ -70,8 +65,12 @@ export default function SectionWithdraw({ id, subject, section, teacher }) {
     const res = await withdraw(id);
 
     if (res) {
-      sync();
+      context.sync();
       dialog.close();
+      context.flash("info", "ถอนวิชาเรียนสำเร็จ");
+    } else {
+      dialog.close();
+      context.flash("error", "มีบางอย่างผิดพลาด โปรดลองใหม่อีกครั้งในภายหลัง");
     }
   };
 

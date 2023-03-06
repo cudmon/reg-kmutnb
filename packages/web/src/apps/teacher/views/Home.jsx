@@ -1,14 +1,23 @@
 import { DataGrid } from "@mui/x-data-grid";
 import { useEffect, useState } from "react";
-import { Box, Button } from "@mui/material";
+import { Alert, Box, Button, Snackbar } from "@mui/material";
 import { getSections } from "../services/section";
 import { SectionContext } from "../context/SectionContext";
 
 import SectionDelete from "../components/SectionDelete";
+import SectionUpdate from "../components/SectionUpdate";
 import SectionHeader from "../components/SectionHeader";
 
 export default function TeacherHomePage() {
   const [rows, setRows] = useState([]);
+  const [snack, setSnack] = useState(false);
+  const [severity, setSeverity] = useState(null);
+  const [message, setMessage] = useState("");
+
+  const $alert = {
+    open: () => setSnack(true),
+    close: () => setSnack(false),
+  };
 
   const columns = [
     {
@@ -74,8 +83,20 @@ export default function TeacherHomePage() {
       width: 200,
       renderCell: ({ row }) => (
         <Box>
-          <Button color="warning">แก้ไข</Button>
-          <SectionDelete id={row.section_id} />
+          <SectionUpdate
+            id={row.section_id}
+            subject={row.subject_name}
+            section={row.section_number}
+            start={row.section_start}
+            end={row.section_end}
+            day={row.section_day}
+          />
+          <SectionDelete
+            id={row.section_id}
+            name={row.subject_name}
+            code={row.subject_code}
+            section={row.section_number}
+          />
         </Box>
       ),
     },
@@ -91,16 +112,23 @@ export default function TeacherHomePage() {
     })();
   }, []);
 
-  const refresh = async () => {
-    const res = await getStudents();
+  const sync = async () => {
+    const res = await getSections();
 
     if (res) {
-      setRows(res.student);
+      setRows(res.section);
     }
   };
 
+  const flash = (severity, message) => {
+    setMessage(message);
+    setSeverity(severity);
+
+    $alert.open();
+  };
+
   return (
-    <SectionContext.Provider value={refresh}>
+    <SectionContext.Provider value={{ sync, flash }}>
       <SectionHeader />
       <DataGrid
         autoHeight
@@ -112,6 +140,21 @@ export default function TeacherHomePage() {
         pageSize={10}
         rowsPerPageOptions={[10]}
       ></DataGrid>
+      <Snackbar
+        open={snack}
+        onClose={$alert.close}
+        autoHideDuration={6000}
+        anchorOrigin={{ vertical: "bottom", horizontal: "center" }}
+      >
+        <Alert
+          elevation={6}
+          variant="filled"
+          onClose={$alert.close}
+          severity={severity}
+        >
+          {message}
+        </Alert>
+      </Snackbar>
     </SectionContext.Provider>
   );
 }

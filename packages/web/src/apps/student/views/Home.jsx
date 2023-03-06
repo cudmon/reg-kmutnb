@@ -2,7 +2,9 @@ import { Context } from "../context";
 import { useEffect, useState } from "react";
 import { getRegistration } from "../services";
 import {
+  Alert,
   Paper,
+  Snackbar,
   Table,
   TableBody,
   TableContainer,
@@ -38,6 +40,14 @@ const columns = [
 
 export default function StudentHomePage() {
   const [rows, setRows] = useState([]);
+  const [snack, setSnack] = useState(false);
+  const [severity, setSeverity] = useState(null);
+  const [message, setMessage] = useState("");
+
+  const $alert = {
+    open: () => setSnack(true),
+    close: () => setSnack(false),
+  };
 
   useEffect(() => {
     (async () => {
@@ -49,7 +59,7 @@ export default function StudentHomePage() {
     })();
   }, []);
 
-  const refresh = async () => {
+  const sync = async () => {
     const res = await getRegistration();
 
     if (res) {
@@ -57,8 +67,15 @@ export default function StudentHomePage() {
     }
   };
 
+  const flash = (severity, message) => {
+    setMessage(message);
+    setSeverity(severity);
+
+    $alert.open();
+  };
+
   return (
-    <Context.Provider value={refresh}>
+    <Context.Provider value={{ sync, flash }}>
       <SectionHeader />
       <TableContainer component={Paper}>
         <Table>
@@ -70,6 +87,21 @@ export default function StudentHomePage() {
           </TableBody>
         </Table>
       </TableContainer>
+      <Snackbar
+        open={snack}
+        onClose={$alert.close}
+        autoHideDuration={6000}
+        anchorOrigin={{ vertical: "bottom", horizontal: "center" }}
+      >
+        <Alert
+          elevation={6}
+          variant="filled"
+          onClose={$alert.close}
+          severity={severity}
+        >
+          {message}
+        </Alert>
+      </Snackbar>
     </Context.Provider>
   );
 }

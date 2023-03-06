@@ -1,14 +1,23 @@
 import { DataGrid } from "@mui/x-data-grid";
 import { useEffect, useState } from "react";
-import { Box, Button } from "@mui/material";
 import { getStudents } from "../services/student";
 import { StudentContext } from "../context/StudentContext";
+import { Alert, Box, Snackbar } from "@mui/material";
 
 import StudentHeader from "../components/StudentHeader";
+import StudentUpdate from "../components/StudentUpdate";
 import StudentDelete from "../components/StudentDelete";
 
 export default function TeacherStudentPage() {
   const [rows, setRows] = useState([]);
+  const [snack, setSnack] = useState(false);
+  const [severity, setSeverity] = useState(null);
+  const [message, setMessage] = useState("");
+
+  const $alert = {
+    open: () => setSnack(true),
+    close: () => setSnack(false),
+  };
 
   const columns = [
     {
@@ -48,7 +57,12 @@ export default function TeacherStudentPage() {
       width: 200,
       renderCell: ({ row }) => (
         <Box>
-          <Button color="warning">แก้ไข</Button>
+          <StudentUpdate
+            id={row.student_id}
+            prefix={row.student_prefix}
+            fname={row.student_first_name}
+            lname={row.student_last_name}
+          />
           <StudentDelete
             id={row.student_id}
             sid={row.student_sid}
@@ -72,16 +86,23 @@ export default function TeacherStudentPage() {
     })();
   }, []);
 
-  const refresh = async () => {
-    const res = await getStudents();
+  const sync = async () => {
+    const res = await getRegistration();
 
     if (res) {
-      setRows(res.student);
+      setRows(res);
     }
   };
 
+  const flash = (severity, message) => {
+    setMessage(message);
+    setSeverity(severity);
+
+    $alert.open();
+  };
+
   return (
-    <StudentContext.Provider value={refresh}>
+    <StudentContext.Provider value={{ sync, flash }}>
       <StudentHeader />
       <DataGrid
         autoHeight
@@ -93,6 +114,21 @@ export default function TeacherStudentPage() {
         pageSize={10}
         rowsPerPageOptions={[10]}
       ></DataGrid>
+      <Snackbar
+        open={snack}
+        onClose={$alert.close}
+        autoHideDuration={6000}
+        anchorOrigin={{ vertical: "bottom", horizontal: "center" }}
+      >
+        <Alert
+          elevation={6}
+          variant="filled"
+          onClose={$alert.close}
+          severity={severity}
+        >
+          {message}
+        </Alert>
+      </Snackbar>
     </StudentContext.Provider>
   );
 }

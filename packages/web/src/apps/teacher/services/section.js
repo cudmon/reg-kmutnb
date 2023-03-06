@@ -18,19 +18,35 @@ export const deleteSection = async (id) => {
 
   try {
     await http(token).delete(`/sections/${id}`);
+
+    return 200;
   } catch (e) {
     if (e.response.status === 403) {
       return 403;
     }
-
-    return false;
   }
 };
 
 export const createSection = async (data) => {
+  const token = useAuth.getState().token;
+
   try {
-    return await http.post("/sections", data);
+    return await http(token).post("/sections", data);
   } catch {
+    return false;
+  }
+};
+
+export const updateSection = async (id, data) => {
+  const token = useAuth.getState().token;
+
+  try {
+    return await http(token).patch(`/sections/${id}`, data);
+  } catch {
+    if (e.response.status === 403) {
+      return 403;
+    }
+
     return false;
   }
 };

@@ -89,21 +89,29 @@ const DialogAction = ({ onClose, onSubmit }) => {
 };
 
 export default function SectionChange({ id, subject, oldSection }) {
-  const sync = useContext(Context);
+  const context = useContext(Context);
   const [opened, setOpened] = useState(false);
   const [newSection, setNewSection] = useState("");
 
   const dialog = {
     open: () => setOpened(true),
-    close: () => setOpened(false),
+    close: () => {
+      setOpened(false);
+      setNewSection("");
+    },
   };
 
   const handler = async () => {
     const res = await change(id, newSection);
 
     if (res) {
-      sync();
+      context.sync();
       dialog.close();
+      setNewSection("");
+      context.flash("info", "เปลี่ยนตอนเรียนสำเร็จ");
+    } else {
+      dialog.close();
+      context.flash("error", "มีบางอย่างผิดพลาด โปรดลองใหม่อีกครั้งในภายหลัง");
       setNewSection("");
     }
   };

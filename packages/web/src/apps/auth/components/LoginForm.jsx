@@ -26,7 +26,6 @@ export default function LoginForm({ error, onLogin }) {
         fullWidth
         size="large"
         type="submit"
-        disableElevation
         variant="contained"
         onClick={() => onLogin(username, password)}
       >

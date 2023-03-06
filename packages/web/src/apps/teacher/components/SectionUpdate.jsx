@@ -1,61 +1,37 @@
-import { getSubjects } from "../services/subject";
-import { createSection } from "../services/section";
-import { useContext, useEffect, useState } from "react";
+import { updateSection } from "../services/section";
+import { useContext, useState } from "react";
 import { SectionContext } from "../context/SectionContext";
 import {
+  Box,
   Button,
   Dialog,
-  DialogContent,
+  TextField,
   DialogTitle,
+  DialogContent,
   FormControl,
   InputLabel,
-  MenuItem,
   Select,
-  TextField,
+  MenuItem,
 } from "@mui/material";
-import { Box } from "@mui/system";
 
 const DialogForm = ({ error, value, onChange }) => {
-  const [subjects, setSubjects] = useState([]);
-
-  useEffect(() => {
-    (async () => {
-      const res = await getSubjects();
-
-      if (res) {
-        setSubjects(res);
-      }
-    })();
-  }, []);
-
   return (
     <>
-      <FormControl
-        error={error.subject}
-        required
-        size="small"
-        margin="normal"
-        fullWidth
-      >
-        <InputLabel id="subject">วิชา</InputLabel>
-        <Select
-          value={value.subject}
-          onChange={onChange}
-          labelId="subject"
-          label="วิชา"
-          fullWidth
-          name="subject"
-        >
-          {subjects.map((s) => (
-            <MenuItem key={s.subject_id} value={s.subject_id}>
-              {s.subject_name}
-            </MenuItem>
-          ))}
-        </Select>
-      </FormControl>
       <TextField
         size="small"
-        value={value.number}
+        value={value.subject}
+        onChange={onChange}
+        fullWidth
+        margin="normal"
+        label="วิชา"
+        name="subject"
+        disabled
+        error={error.subject}
+        required
+      />
+      <TextField
+        size="small"
+        value={value.section}
         onChange={onChange}
         fullWidth
         margin="normal"
@@ -129,22 +105,29 @@ const DialogAction = ({ onClose, onSubmit }) => {
       <Button color="secondary" onClick={onClose}>
         ยกเลิก
       </Button>
-      <Button color="primary" onClick={onSubmit} variant="contained">
-        สร้าง
+      <Button color="warning" onClick={onSubmit}>
+        แก้ไข
       </Button>
     </Box>
   );
 };
 
-export default function SectionCreate() {
+export default function SectionUpdate({
+  id,
+  subject,
+  day,
+  section,
+  start,
+  end,
+}) {
   const context = useContext(SectionContext);
   const [opened, setOpened] = useState(false);
   const [input, setInput] = useState({
-    subject: "",
-    day: "",
-    section: "",
-    start: "",
-    end: "",
+    subject,
+    day,
+    section,
+    start,
+    end,
   });
   const [inputError, setInputError] = useState({
     subject: false,
@@ -159,11 +142,11 @@ export default function SectionCreate() {
     close: () => {
       setOpened(false);
       setInput({
-        subject: "",
-        day: "",
-        section: "",
-        start: "",
-        end: "",
+        subject,
+        day,
+        section,
+        start,
+        end,
       });
     },
   };
@@ -186,27 +169,26 @@ export default function SectionCreate() {
     if (Object.values(invalid).indexOf(true) > -1) {
       setInputError(invalid);
     } else {
-      const res = await createSection({
+      const res = await updateSection(id, {
+        section_number: Number(input.section),
         section_start: input.start,
         section_end: input.end,
-        section_day: input.day,
-        section_number: input.section,
-        subject_id: input.subject,
-        semester_id: 1,
+        section_day: Number(input.day),
       });
 
       if (res) {
         context.sync();
         dialog.close();
-        context.flash("info", "เพิ่มตอนเรียนสำเร็จ");
-        setInput({ subject: "", day: "", section: "", start: "", end: "" });
+        context.flash("info", "แก้ไขตอนเรียนสำเร็จ");
+      } else if (res === 403) {
+        dialog.close();
+        context.flash("error", "ไม่สามารถแก้ไขได้ คุณไม่ใช่เจ้าของตอนเรียน");
       } else {
         dialog.close();
         context.flash(
           "error",
           "มีบางอย่างผิดพลาด โปรดลองใหม่อีกครั้งในภายหลัง"
         );
-        setInput({ subject: "", day: "", section: "", start: "", end: "" });
       }
     }
   };
@@ -220,17 +202,12 @@ export default function SectionCreate() {
 
   return (
     <>
-      <Button
-        size="large"
-        color="primary"
-        variant="contained"
-        onClick={dialog.open}
-      >
-        สร้าง
+      <Button size="large" color="warning" onClick={dialog.open}>
+        แก้ไข
       </Button>
       <Dialog open={opened} onClose={dialog.close}>
-        <DialogTitle align="center">สร้างตอนเรียน</DialogTitle>
-        <DialogContent sx={{ minWidth: 300 }}>
+        <DialogTitle align="center">แก้ไขตอนเรียน</DialogTitle>
+        <DialogContent>
           <DialogForm error={inputError} value={input} onChange={handleInput} />
           <DialogAction onClose={dialog.close} onSubmit={handler} />
         </DialogContent>

@@ -1,5 +1,5 @@
 import { useContext, useState } from "react";
-import { createStudent } from "../services/student";
+import { updateStudent } from "../services/student";
 import { StudentContext } from "../context/StudentContext";
 import {
   Box,
@@ -14,7 +14,6 @@ const forms = [
   { label: "คำนำหน้า", name: "prefix" },
   { label: "ชื่อ", name: "firstName" },
   { label: "สกุล", name: "lastName" },
-  { label: "รหัสนักศึกษา", name: "sid" },
 ];
 
 const DialogForm = ({ error, value, onChange }) => {
@@ -49,27 +48,25 @@ const DialogAction = ({ onClose, onSubmit }) => {
       <Button color="secondary" onClick={onClose}>
         ยกเลิก
       </Button>
-      <Button color="primary" onClick={onSubmit} variant="contained">
-        เพิ่ม
+      <Button color="warning" onClick={onSubmit} variant="contained">
+        แก้ไข
       </Button>
     </Box>
   );
 };
 
-export default function StudentCreate() {
+export default function StudentUpdate({ id, fname, lname, prefix }) {
   const context = useContext(StudentContext);
   const [opened, setOpened] = useState(false);
   const [input, setInput] = useState({
-    sid: "",
-    firstName: "",
-    lastName: "",
-    prefix: "",
+    firstName: fname,
+    lastName: lname,
+    prefix,
   });
   const [inputError, setInputError] = useState({
     prefix: false,
     firstName: false,
     lastName: false,
-    sid: false,
   });
 
   const dialog = {
@@ -77,10 +74,9 @@ export default function StudentCreate() {
     close: () => {
       setOpened(false);
       setInput({
-        sid: "",
-        firstName: "",
-        lastName: "",
-        prefix: "",
+        firstName: fname,
+        lastName: lname,
+        prefix,
       });
     },
   };
@@ -102,27 +98,22 @@ export default function StudentCreate() {
     if (Object.values(invalid).indexOf(true) > -1) {
       setInputError(invalid);
     } else {
-      const res = await createStudent({
-        student_sid: input.sid,
-        student_prefix: input.prefix,
-        student_first_name: input.firstName,
-        student_last_name: input.lastName,
-        student_password: input.sid,
-        program_id: 1,
+      const res = await updateStudent(id, {
+        prefix: input.prefix,
+        firstName: input.firstName,
+        lastName: input.lastName,
       });
 
       if (res) {
-        sync();
+        context.sync();
         dialog.close();
-        context.flash("info", "เพิ่มนักศึกษาสำเร็จ");
-        setInput({ sid: "", firstName: "", lastName: "", prefix: "" });
+        context.flash("info", "แก้ไขนักเรียนสำเร็จ");
       } else {
         dialog.close();
         context.flash(
           "error",
           "มีบางอย่างผิดพลาด โปรดลองใหม่อีกครั้งในภายหลัง"
         );
-        setInput({ sid: "", firstName: "", lastName: "", prefix: "" });
       }
     }
   };
@@ -136,16 +127,11 @@ export default function StudentCreate() {
 
   return (
     <>
-      <Button
-        size="large"
-        color="primary"
-        variant="contained"
-        onClick={dialog.open}
-      >
-        เพิ่ม
+      <Button size="large" color="warning" onClick={dialog.open}>
+        แก้ไข
       </Button>
       <Dialog open={opened} onClose={dialog.close}>
-        <DialogTitle align="center">เพิ่มนักศึกษา</DialogTitle>
+        <DialogTitle align="center">แก้ไขนักศึกษา</DialogTitle>
         <DialogContent>
           <DialogForm error={inputError} value={input} onChange={handleInput} />
           <DialogAction onClose={dialog.close} onSubmit={handler} />

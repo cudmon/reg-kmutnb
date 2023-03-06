@@ -45,12 +45,7 @@ const DialogAction = ({ onClose, onSubmit }) => {
       <Button color="secondary" onClick={onClose}>
         ยกเลิก
       </Button>
-      <Button
-        color="error"
-        disableElevation
-        onClick={onSubmit}
-        variant="contained"
-      >
+      <Button color="error" onClick={onSubmit} variant="contained">
         ลบ
       </Button>
     </Box>
@@ -65,7 +60,7 @@ export default function StudentDelete({
   lname,
   faculty,
 }) {
-  const sync = useContext(StudentContext);
+  const context = useContext(StudentContext);
   const [opened, setOpened] = useState(false);
 
   const dialog = {
@@ -76,9 +71,13 @@ export default function StudentDelete({
   const handler = async () => {
     const res = await deleteStudent(id);
 
-    if (res) {
-      sync();
+    if (res === 200) {
+      context.sync();
       dialog.close();
+      context.flash("info", "ลบนักเรียนสำเร็จ");
+    } else {
+      dialog.close();
+      context.flash("error", "มีบางอย่างผิดพลาด โปรดลองใหม่อีกครั้งในภายหลัง");
     }
   };
 
@@ -91,9 +90,9 @@ export default function StudentDelete({
         <DialogTitle align="center">ลบนักศึกษา</DialogTitle>
         <DialogContent>
           <DialogForm
-            sid={id}
+            sid={sid}
             faculty={faculty}
-            name={`${prefix}${fname} ${lname}`}
+            name={`${prefix} ${fname} ${lname}`}
           />
           <DialogAction onClose={dialog.close} onSubmit={handler} />
         </DialogContent>

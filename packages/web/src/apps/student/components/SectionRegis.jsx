@@ -16,16 +16,27 @@ import {
 const DialogForm = ({ value, onChange }) => {
   const [subjects, setSubjects] = useState([]);
   const [sections, setSections] = useState([]);
+  const [isSubjectSelected, setIsSubjectSelected] = useState(false);
 
   useEffect(() => {
     (async () => {
-      const registration = await getRegistration();
       const sections = await getSections();
+      const registration = await getRegistration();
 
       setSubjects(sections.section);
-      setSections(sections.section);
     })();
   }, []);
+
+  useEffect(() => {
+    (async () => {
+      setSections(subjects);
+    })();
+  }, [isSubjectSelected]);
+
+  const handleChange = (event) => {
+    onChange(event);
+    setIsSubjectSelected(true);
+  };
 
   return (
     <Box align="center">
@@ -36,17 +47,22 @@ const DialogForm = ({ value, onChange }) => {
           id="subject"
           value={value.subject}
           label="วิชา"
-          onChange={onChange}
+          onChange={handleChange}
           name="subject"
         >
           {subjects.map((subject) => (
-            <MenuItem key={subject.subject_id} value={subject.subject_code}>
+            <MenuItem key={subject.section_id} value={subject.subject_code}>
               {subject.subject_name}
             </MenuItem>
           ))}
         </Select>
       </FormControl>
-      <FormControl margin="normal" size="small" fullWidth>
+      <FormControl
+        disabled={!isSubjectSelected}
+        margin="normal"
+        size="small"
+        fullWidth
+      >
         <InputLabel id="section-label">ตอนเรียน</InputLabel>
         <Select
           labelId="section-label"
@@ -86,7 +102,7 @@ const DialogAction = ({ onClose, onSubmit }) => {
 };
 
 export default function SectionRegis() {
-  const sync = useContext(Context);
+  const context = useContext(Context);
   const [opened, setOpened] = useState(false);
 
   const [input, setInput] = useState({
@@ -96,15 +112,26 @@ export default function SectionRegis() {
 
   const dialog = {
     open: () => setOpened(true),
-    close: () => setOpened(false),
+    close: () => {
+      setOpened(false);
+      setInput({
+        subject: "",
+        section: "",
+      });
+    },
   };
 
   const handler = async () => {
     const res = await regis(input.subject, input.section);
 
     if (res) {
-      sync();
+      context.sync();
       dialog.close();
+      setInput({ subject: "", section: "" });
+      context.flash("info", "ลงทะเบียนสำเร็จ");
+    } else {
+      dialog.close();
+      context.flash("error", "มีบางอย่างผิดพลาด โปรดลองใหม่อีกครั้งในภายหลัง");
       setInput({ subject: "", section: "" });
     }
   };
