@@ -112,7 +112,7 @@ export default function StudentCreate() {
       });
 
       if (res) {
-        sync();
+        context.sync();
         dialog.close();
         context.flash("info", "เพิ่มนักศึกษาสำเร็จ");
         setInput({ sid: "", firstName: "", lastName: "", prefix: "" });
