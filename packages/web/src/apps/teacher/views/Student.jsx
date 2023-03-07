@@ -87,7 +87,7 @@ export default function TeacherStudentPage() {
   }, []);
 
   const sync = async () => {
-    const res = await getRegistration();
+    const res = await getStudents();
 
     if (res) {
       setRows(res);
