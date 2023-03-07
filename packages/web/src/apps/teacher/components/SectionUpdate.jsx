@@ -60,7 +60,7 @@ const DialogForm = ({ error, value, onChange }) => {
           <MenuItem value={1}>อาทิตย์</MenuItem>
           <MenuItem value={2}>จันทร์</MenuItem>
           <MenuItem value={3}>อังคาร</MenuItem>
-          <MenuItem value={4}>พุทธ</MenuItem>
+          <MenuItem value={4}>พุธ</MenuItem>
           <MenuItem value={5}>พฤหัสบดี</MenuItem>
           <MenuItem value={6}>ศุกร์</MenuItem>
           <MenuItem value={7}>เสาร์</MenuItem>
