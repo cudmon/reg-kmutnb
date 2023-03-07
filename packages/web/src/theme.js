@@ -1,5 +1,5 @@
 import { createTheme } from "@mui/material";
-import { blue, blueGrey, indigo, teal } from "@mui/material/colors";
+import { blue, blueGrey, teal, deepOrange } from "@mui/material/colors";
 
 const MODE = "light";
 
@@ -42,7 +42,7 @@ const theme = {
 
 export const studentTheme = createTheme({
   palette: {
-    primary: indigo,
+    primary: deepOrange,
     secondary: blueGrey,
     mode: MODE,
   },
