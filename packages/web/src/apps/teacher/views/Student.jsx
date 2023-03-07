@@ -90,7 +90,7 @@ export default function TeacherStudentPage() {
     const res = await getStudents();
 
     if (res) {
-      setRows(res);
+      setRows(res.student);
     }
   };
 
