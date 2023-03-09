@@ -32,7 +32,7 @@ export default function TeacherStudentPage() {
       align: "left",
       headerAlign: "left",
       valueGetter: ({ row }) => {
-        return `${row.student_prefix} ${row.student_first_name} ${row.student_last_name}`;
+        return `${row.student_prefix}${row.student_first_name} ${row.student_last_name}`;
       },
     },
     {
@@ -90,7 +90,7 @@ export default function TeacherStudentPage() {
     const res = await getStudents();
 
     if (res) {
-      setRows(res);
+      setRows(res.student);
     }
   };
 

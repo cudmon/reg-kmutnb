@@ -10,7 +10,7 @@ export default function SectionHeader() {
       justifyContent="space-between"
     >
       <Typography fontWeight={500} variant="h5">
-        ผลการลงทะเบียน
+        ลงทะเบียน
       </Typography>
       <SectionRegis />
     </Stack>

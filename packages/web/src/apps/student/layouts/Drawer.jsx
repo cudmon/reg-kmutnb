@@ -19,6 +19,11 @@ const links = [
     href: "/",
     icon: <Home />,
   },
+  {
+    label: "ลงทะเบียน",
+    href: "/regis",
+    icon: <Home />,
+  },
 ];
 
 export default function StudentDrawer({ opened, mobile, width, toggle }) {

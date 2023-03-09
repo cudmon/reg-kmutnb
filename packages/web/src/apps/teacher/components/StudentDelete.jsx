@@ -92,7 +92,7 @@ export default function StudentDelete({
           <DialogForm
             sid={sid}
             faculty={faculty}
-            name={`${prefix} ${fname} ${lname}`}
+            name={`${prefix}${fname} ${lname}`}
           />
           <DialogAction onClose={dialog.close} onSubmit={handler} />
         </DialogContent>

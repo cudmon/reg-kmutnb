@@ -6,6 +6,7 @@ import AuthLoginPage from "@/apps/auth/views/Login";
 
 import StudentLayout from "@/apps/student/layouts";
 import StudentHomePage from "@/apps/student/views/Home";
+import StudentRegisPage from "@/apps/student/views/Regis";
 
 import TeacherLayout from "@/apps/teacher/layouts";
 import TeacherHomePage from "@/apps/teacher/views/Home";
@@ -24,7 +25,9 @@ export default function App() {
         {role === "student" ? (
           <Route element={<StudentLayout />}>
             <Route path="/" element={<StudentHomePage />} />
+            <Route path="/regis" element={<StudentRegisPage />} />
           </Route>
+          
         ) : null}
 
         {role === "teacher" ? (
