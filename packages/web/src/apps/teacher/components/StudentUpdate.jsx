@@ -89,7 +89,10 @@ export default function StudentUpdate({ id, fname, lname, prefix }) {
       sid: false,
     };
 
-    forms.map((form) => {
+    [
+      { label: "คำนำหน้า", name: "prefix" },
+      { label: "ชื่อ", name: "firstName" },
+    ].map((form) => {
       if (!input[form.name]) {
         invalid[form.name] = true;
       }
@@ -108,6 +111,11 @@ export default function StudentUpdate({ id, fname, lname, prefix }) {
         context.sync();
         dialog.close();
         context.flash("info", "แก้ไขนักเรียนสำเร็จ");
+        setInput({
+          prefix: input.prefix,
+          firstName: input.firstName,
+          lastName: input.lastName,
+        });
       } else {
         dialog.close();
         context.flash(

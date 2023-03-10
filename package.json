@@ -11,5 +11,8 @@
   },
   "devDependencies": {
     "prettier": "^2.8.4"
+  },
+  "dependencies": {
+    "@mui/lab": "^5.0.0-alpha.122"
   }
 }

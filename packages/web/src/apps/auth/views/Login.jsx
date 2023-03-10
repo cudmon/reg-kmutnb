@@ -15,12 +15,18 @@ export default function LoginBody() {
   const [isValid, setIsValid] = useState(true);
   const [isEmpty, setIsEmpty] = useState(false);
   const [isError, setIsError] = useState(false);
+  const [loading, setLoading] = useState(false);
 
   const store = useAuth((state) => state.update);
 
   const login = async (username, password) => {
+    setLoading(true);
+
     if (!username || !password) {
-      return setIsEmpty(true);
+      setLoading(false);
+      setIsEmpty(true);
+
+      return false;
     }
 
     setIsValid(true);
@@ -39,11 +45,17 @@ export default function LoginBody() {
       });
 
       navigate("/");
+
+      setLoading(false);
     } catch (e) {
       if (e.response.status === 403) {
-        return setIsValid(false);
+        setLoading(false);
+        setIsValid(false);
+
+        return false;
       }
 
+      setLoading(false);
       setIsError(true);
     }
   };
@@ -62,7 +74,11 @@ export default function LoginBody() {
           message="กรุณากรอกข้อมูลให้ครบถ้วน"
           onClose={() => setIsEmpty(false)}
         />
-        <LoginForm error={!isValid || isEmpty} onLogin={login} />
+        <LoginForm
+          loading={loading}
+          error={!isValid || isEmpty}
+          onLogin={login}
+        />
         <LoginError open={isError} onClose={() => setIsError(false)} />
       </CardContent>
     </Card>

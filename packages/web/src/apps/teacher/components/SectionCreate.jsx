@@ -62,6 +62,7 @@ const DialogForm = ({ error, value, onChange }) => {
         label="ตอนเรียนที่"
         type="number"
         name="section"
+        inputProps={{ min: "1" }}
         error={error.section}
         required
       />
@@ -97,7 +98,7 @@ const DialogForm = ({ error, value, onChange }) => {
         onChange={onChange}
         fullWidth
         margin="normal"
-        placeholder="00:00:00"
+        placeholder="00:00"
         label="เริ่ม"
         error={error.start}
         required
@@ -109,7 +110,7 @@ const DialogForm = ({ error, value, onChange }) => {
         onChange={onChange}
         fullWidth
         margin="normal"
-        placeholder="00:00:00"
+        placeholder="00:00"
         label="สิ้นสุด"
         error={error.end}
         required

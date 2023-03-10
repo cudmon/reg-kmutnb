@@ -27,7 +27,9 @@ const DialogForm = (props) => {
           margin="normal"
           label={form.label}
           value={props[form.name]}
+          focused={false}
           inputProps={{ readOnly: true }}
+          sx={{ backgroundColor: "#e2e8f0" }}
         />
       ))}
     </Box>

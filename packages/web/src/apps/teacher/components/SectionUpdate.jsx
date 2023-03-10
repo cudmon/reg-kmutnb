@@ -180,6 +180,13 @@ export default function SectionUpdate({
         context.sync();
         dialog.close();
         context.flash("info", "แก้ไขตอนเรียนสำเร็จ");
+        setInput({
+          subject: input.subject,
+          day: input.day,
+          section: input.section,
+          start: input.start,
+          end: input.end,
+        });
       } else if (res === 403) {
         dialog.close();
         context.flash("error", "ไม่สามารถแก้ไขได้ คุณไม่ใช่เจ้าของตอนเรียน");

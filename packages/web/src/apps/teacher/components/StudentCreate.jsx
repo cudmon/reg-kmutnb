@@ -93,7 +93,11 @@ export default function StudentCreate() {
       sid: false,
     };
 
-    forms.map((form) => {
+    [
+      { label: "คำนำหน้า", name: "prefix" },
+      { label: "ชื่อ", name: "firstName" },
+      { label: "รหัสนักศึกษา", name: "sid" },
+    ].map((form) => {
       if (!input[form.name]) {
         invalid[form.name] = true;
       }

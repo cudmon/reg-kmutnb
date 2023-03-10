@@ -1,9 +1,14 @@
 import { useState } from "react";
 import { Button, Stack, TextField } from "@mui/material";
+import { LoadingButton } from "@mui/lab";
 
-export default function LoginForm({ error, onLogin }) {
+export default function LoginForm({ loading, error, onLogin }) {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
+
+  const handleLogin = () => {
+    onLogin(username, password);
+  };
 
   return (
     <Stack component="form" spacing={4} onSubmit={(e) => e.preventDefault()}>
@@ -22,15 +27,16 @@ export default function LoginForm({ error, onLogin }) {
         value={password}
         onChange={(e) => setPassword(e.target.value)}
       />
-      <Button
+      <LoadingButton
         fullWidth
         size="large"
         type="submit"
         variant="contained"
-        onClick={() => onLogin(username, password)}
+        loading={loading}
+        onClick={handleLogin}
       >
         เข้าสู่ระบบ
-      </Button>
+      </LoadingButton>
     </Stack>
   );
 }

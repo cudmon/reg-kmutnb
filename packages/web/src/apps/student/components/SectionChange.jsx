@@ -42,12 +42,13 @@ const DialogForm = ({ subject, oldSection, newSection, onChange }) => {
       <Box marginTop={2} display="flex">
         <TextField
           size="small"
-          sx={{ marginRight: 1 }}
           fullWidth
-          inputProps={{ readOnly: true }}
           value={oldSection}
           type="number"
           label="ตอนเรียนเดิม"
+          focused={false}
+          inputProps={{ readOnly: true }}
+          sx={{ backgroundColor: "#e2e8f0", marginRight: 1 }}
         />
         <FormControl size="small" fullWidth>
           <InputLabel id="new-section-label">ตอนเรียนใหม่</InputLabel>
