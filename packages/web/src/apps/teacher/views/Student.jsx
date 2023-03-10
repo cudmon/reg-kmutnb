@@ -59,6 +59,7 @@ export default function TeacherStudentPage() {
         <Box>
           <StudentUpdate
             id={row.student_id}
+            sid={row.student_sid}
             prefix={row.student_prefix}
             fname={row.student_first_name}
             lname={row.student_last_name}

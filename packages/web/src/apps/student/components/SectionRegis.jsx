@@ -1,6 +1,6 @@
 import { Context } from "../context";
 import { useContext, useEffect, useState } from "react";
-import { getRegistration, getSections, getSubjects, regis } from "../services";
+import { getRegistration, getSections, regis } from "../services";
 import {
   Box,
   Button,

@@ -54,6 +54,7 @@ export default function StudentDrawer({ opened, mobile, width, toggle }) {
                 component={Link}
                 to={link.href}
                 sx={{ borderRadius: 1 }}
+                onClick={mobile ? toggle : null}
               >
                 <ListItemIcon>{link.icon}</ListItemIcon>
                 <ListItemText primary={link.label} />

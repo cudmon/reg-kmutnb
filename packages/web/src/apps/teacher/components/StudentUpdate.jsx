@@ -14,6 +14,7 @@ const forms = [
   { label: "คำนำหน้า", name: "prefix" },
   { label: "ชื่อ", name: "firstName" },
   { label: "สกุล", name: "lastName" },
+  { label: "รหัสนักศึกษา", name: "sid" },
 ];
 
 const DialogForm = ({ error, value, onChange }) => {
@@ -55,18 +56,20 @@ const DialogAction = ({ onClose, onSubmit }) => {
   );
 };
 
-export default function StudentUpdate({ id, fname, lname, prefix }) {
+export default function StudentUpdate({ id, sid, fname, lname, prefix }) {
   const context = useContext(StudentContext);
   const [opened, setOpened] = useState(false);
   const [input, setInput] = useState({
     firstName: fname,
     lastName: lname,
     prefix,
+    sid,
   });
   const [inputError, setInputError] = useState({
     prefix: false,
     firstName: false,
     lastName: false,
+    sid: false,
   });
 
   const dialog = {
@@ -77,6 +80,7 @@ export default function StudentUpdate({ id, fname, lname, prefix }) {
         firstName: fname,
         lastName: lname,
         prefix,
+        sid,
       });
     },
   };
@@ -92,6 +96,7 @@ export default function StudentUpdate({ id, fname, lname, prefix }) {
     [
       { label: "คำนำหน้า", name: "prefix" },
       { label: "ชื่อ", name: "firstName" },
+      { label: "รหัสนักศึกษา", name: "sid" },
     ].map((form) => {
       if (!input[form.name]) {
         invalid[form.name] = true;

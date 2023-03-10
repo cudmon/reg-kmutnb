@@ -1,5 +1,5 @@
-import { Typography } from "@mui/material";
-import { DataGrid } from "@mui/x-data-grid";
+import { Stack, Typography } from "@mui/material";
+import { DataGrid, gridClasses } from "@mui/x-data-grid";
 import { useEffect, useState } from "react";
 import { getRegistration } from "../services";
 
@@ -61,6 +61,7 @@ const columns = [
     align: "center",
     sortable: false,
     flex: 1,
+    headerClassName: "hideRightSeparator",
     headerAlign: "center",
     valueGetter: ({ row }) => {
       return `${row.section_start} - ${row.section_end}`;
@@ -96,6 +97,27 @@ export default function StudentHomePage() {
         pageSize={100}
         rowsPerPageOptions={[100]}
         hideFooter
+        components={{
+          NoRowsOverlay: () => (
+            <Stack height="100%" alignItems="center" justifyContent="center">
+              คุณยังไม่ได้ลงทะเบียน
+            </Stack>
+          ),
+        }}
+        sx={{
+          userSelect: "none",
+          "& .hideRightSeparator > .MuiDataGrid-columnSeparator": {
+            display: "none",
+          },
+          [`& .${gridClasses.cell}:focus, & .${gridClasses.cell}:focus-within`]:
+            {
+              outline: "none",
+            },
+          [`& .${gridClasses.columnHeader}:focus, & .${gridClasses.columnHeader}:focus-within`]:
+            {
+              outline: "none",
+            },
+        }}
       ></DataGrid>
     </>
   );
