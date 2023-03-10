@@ -14,7 +14,7 @@ import {
   TextField,
 } from "@mui/material";
 
-const DialogForm = ({ subject, oldSection, newSection, onChange }) => {
+const DialogForm = ({ error, subject, oldSection, newSection, onChange }) => {
   const [sections, setSections] = useState([]);
 
   useEffect(() => {
@@ -38,6 +38,7 @@ const DialogForm = ({ subject, oldSection, newSection, onChange }) => {
         label="วิชา"
         margin="normal"
         inputProps={{ readOnly: true }}
+        sx={{ backgroundColor: "#e2e8f0" }}
       />
       <Box marginTop={2} display="flex">
         <TextField
@@ -50,7 +51,7 @@ const DialogForm = ({ subject, oldSection, newSection, onChange }) => {
           inputProps={{ readOnly: true }}
           sx={{ backgroundColor: "#e2e8f0", marginRight: 1 }}
         />
-        <FormControl size="small" fullWidth>
+        <FormControl error={error} size="small" fullWidth>
           <InputLabel id="new-section-label">ตอนเรียนใหม่</InputLabel>
           <Select
             labelId="new-section-label"
@@ -90,9 +91,10 @@ const DialogAction = ({ onClose, onSubmit }) => {
 };
 
 export default function SectionChange({ id, subject, oldSection }) {
-  const context = useContext(Context);
+  const { sync, flash } = useContext(Context);
   const [opened, setOpened] = useState(false);
   const [newSection, setNewSection] = useState("");
+  const [error, setError] = useState(false);
 
   const dialog = {
     open: () => setOpened(true),
@@ -103,18 +105,21 @@ export default function SectionChange({ id, subject, oldSection }) {
   };
 
   const handler = async () => {
+    if (!newSection) {
+      return setError(true);
+    }
     const res = await change(id, newSection);
 
     if (res) {
-      context.sync();
-      dialog.close();
-      setNewSection("");
-      context.flash("info", "เปลี่ยนตอนเรียนสำเร็จ");
+      sync();
+      flash("info", "เปลี่ยนตอนเรียนสำเร็จ");
     } else {
-      dialog.close();
-      context.flash("error", "มีบางอย่างผิดพลาด โปรดลองใหม่อีกครั้งในภายหลัง");
-      setNewSection("");
+      flash("error", "มีบางอย่างผิดพลาด โปรดลองใหม่อีกครั้งในภายหลัง");
     }
+
+    dialog.close();
+    setNewSection("");
+    setError(false);
   };
 
   const handleInput = (event) => {
@@ -130,6 +135,7 @@ export default function SectionChange({ id, subject, oldSection }) {
         <DialogTitle align="center">เปลี่ยนตอนเรียน</DialogTitle>
         <DialogContent sx={{ width: 400 }}>
           <DialogForm
+            error={error}
             subject={subject}
             oldSection={oldSection}
             newSection={newSection}

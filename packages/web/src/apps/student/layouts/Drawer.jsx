@@ -21,7 +21,7 @@ const links = [
   },
   {
     label: "ลงทะเบียน",
-    href: "/regis",
+    href: "/registration",
     icon: <Home />,
   },
 ];

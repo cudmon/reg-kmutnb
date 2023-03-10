@@ -13,23 +13,53 @@ import {
   Select,
 } from "@mui/material";
 
-const DialogForm = ({ value, onChange }) => {
+const DialogForm = ({ error, value, onChange }) => {
   const [subjects, setSubjects] = useState([]);
   const [sections, setSections] = useState([]);
   const [isSubjectSelected, setIsSubjectSelected] = useState(false);
 
   useEffect(() => {
     (async () => {
-      const sections = await getSections();
+      const { section } = await getSections();
       const registration = await getRegistration();
+      const subjects = [];
 
-      setSubjects(sections.section);
+      function push(array, item) {
+        if (!array.find(({ code }) => code === item.code)) {
+          array.push(item);
+        }
+      }
+
+      section.map((el) => {
+        if (
+          !registration.find(
+            ({ subject_code }) => subject_code === el.subject_code
+          )
+        ) {
+          push(subjects, { name: el.subject_name, code: el.subject_code });
+        }
+      });
+
+      setSubjects(subjects);
     })();
   }, []);
 
   useEffect(() => {
     (async () => {
-      setSections(subjects);
+      const secs = [];
+      const { section } = await getSections();
+
+      if (isSubjectSelected) {
+        section.find((e) => {
+          if (e.subject_code === value.subject) {
+            secs.push(e.section_number);
+          }
+        });
+
+        console.log(secs);
+
+        setSections(secs);
+      }
     })();
   }, [isSubjectSelected]);
 
@@ -40,7 +70,7 @@ const DialogForm = ({ value, onChange }) => {
 
   return (
     <Box align="center">
-      <FormControl margin="normal" size="small" fullWidth>
+      <FormControl error={error.subject} margin="normal" size="small" fullWidth>
         <InputLabel id="subject-label">วิชา</InputLabel>
         <Select
           labelId="subject-label"
@@ -51,8 +81,8 @@ const DialogForm = ({ value, onChange }) => {
           name="subject"
         >
           {subjects.map((subject) => (
-            <MenuItem key={subject.section_id} value={subject.subject_code}>
-              {subject.subject_name}
+            <MenuItem key={subject.code} value={subject.code}>
+              {subject.name}
             </MenuItem>
           ))}
         </Select>
@@ -62,6 +92,7 @@ const DialogForm = ({ value, onChange }) => {
         margin="normal"
         size="small"
         fullWidth
+        error={error.section}
       >
         <InputLabel id="section-label">ตอนเรียน</InputLabel>
         <Select
@@ -73,8 +104,8 @@ const DialogForm = ({ value, onChange }) => {
           name="section"
         >
           {sections.map((section) => (
-            <MenuItem key={section.section_id} value={section.section_number}>
-              {section.section_number}
+            <MenuItem key={section} value={section}>
+              {section}
             </MenuItem>
           ))}
         </Select>
@@ -104,6 +135,10 @@ const DialogAction = ({ onClose, onSubmit }) => {
 export default function SectionRegis() {
   const context = useContext(Context);
   const [opened, setOpened] = useState(false);
+  const [error, setError] = useState({
+    section: false,
+    subject: false,
+  });
 
   const [input, setInput] = useState({
     subject: "",
@@ -122,6 +157,20 @@ export default function SectionRegis() {
   };
 
   const handler = async () => {
+    if (!input.subject) {
+      return setError({
+        ...error,
+        subject: true,
+      });
+    }
+
+    if (!input.section) {
+      return setError({
+        ...error,
+        section: true,
+      });
+    }
+
     const res = await regis(input.subject, input.section);
 
     if (res) {
@@ -134,6 +183,11 @@ export default function SectionRegis() {
       context.flash("error", "มีบางอย่างผิดพลาด โปรดลองใหม่อีกครั้งในภายหลัง");
       setInput({ subject: "", section: "" });
     }
+
+    setError({
+      section: false,
+      subject: false,
+    });
   };
 
   const handleInput = (event) => {
@@ -156,7 +210,7 @@ export default function SectionRegis() {
       <Dialog open={opened} onClose={dialog.close}>
         <DialogTitle align="center">ลงทะเบียน</DialogTitle>
         <DialogContent sx={{ width: 400 }}>
-          <DialogForm value={input} onChange={handleInput} />
+          <DialogForm error={error} value={input} onChange={handleInput} />
           <DialogAction onClose={dialog.close} onSubmit={handler} />
         </DialogContent>
       </Dialog>

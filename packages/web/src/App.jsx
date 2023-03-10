@@ -25,7 +25,7 @@ export default function App() {
         {role === "student" ? (
           <Route element={<StudentLayout />}>
             <Route path="/" element={<StudentHomePage />} />
-            <Route path="/regis" element={<StudentRegisPage />} />
+            <Route path="/registration" element={<StudentRegisPage />} />
           </Route>
           
         ) : null}
