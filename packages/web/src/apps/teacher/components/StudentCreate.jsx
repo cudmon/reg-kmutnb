@@ -1,6 +1,8 @@
+import validator from "validator";
 import { useContext, useState } from "react";
 import { createStudent } from "../services/student";
 import { StudentContext } from "../context/StudentContext";
+
 import {
   Box,
   Button,
@@ -96,12 +98,32 @@ export default function StudentCreate() {
     [
       { label: "คำนำหน้า", name: "prefix" },
       { label: "ชื่อ", name: "firstName" },
+      { label: "นามสกุล", name: "lastName" },
       { label: "รหัสนักศึกษา", name: "sid" },
     ].map((form) => {
       if (!input[form.name]) {
         invalid[form.name] = true;
       }
     });
+
+    if (!validator.isAlpha(input.prefix, ["th-TH"])) {
+      invalid["prefix"] = true;
+    }
+
+    if (!validator.isAlpha(input.firstName, ["th-TH"])) {
+      invalid["firstName"] = true;
+    }
+
+    if (!validator.isAlpha(input.lastName, ["th-TH"])) {
+      invalid["lastName"] = true;
+    }
+
+    if (
+      !validator.isNumeric(input.sid) ||
+      !validator.isLength(input.sid, { min: 13, max: 13 })
+    ) {
+      invalid["sid"] = true;
+    }
 
     if (Object.values(invalid).indexOf(true) > -1) {
       setInputError(invalid);

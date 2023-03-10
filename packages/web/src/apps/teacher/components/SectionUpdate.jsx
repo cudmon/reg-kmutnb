@@ -1,5 +1,6 @@
-import { updateSection } from "../services/section";
+import validator from "validator";
 import { useContext, useState } from "react";
+import { updateSection } from "../services/section";
 import { SectionContext } from "../context/SectionContext";
 import {
   Box,
@@ -165,6 +166,18 @@ export default function SectionUpdate({
         invalid[form] = true;
       }
     });
+
+    if (Number(input.section) < 1) {
+      invalid["section"] = true;
+    }
+
+    if (!/^([0-1]?[0-9]|2[0-4]):([0-5][0-9])?$/.test(input.start)) {
+      invalid["start"] = true;
+    }
+
+    if (!/^([0-1]?[0-9]|2[0-4]):([0-5][0-9])?$/.test(input.end)) {
+      invalid["end"] = true;
+    }
 
     if (Object.values(invalid).indexOf(true) > -1) {
       setInputError(invalid);

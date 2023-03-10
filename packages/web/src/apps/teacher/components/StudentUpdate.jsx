@@ -1,3 +1,4 @@
+import validator from "validator";
 import { useContext, useState } from "react";
 import { updateStudent } from "../services/student";
 import { StudentContext } from "../context/StudentContext";
@@ -102,6 +103,25 @@ export default function StudentUpdate({ id, sid, fname, lname, prefix }) {
         invalid[form.name] = true;
       }
     });
+
+    if (!validator.isAlpha(input.prefix, ["th-TH"])) {
+      invalid["prefix"] = true;
+    }
+
+    if (!validator.isAlpha(input.firstName, ["th-TH"])) {
+      invalid["firstName"] = true;
+    }
+
+    if (!validator.isAlpha(input.lastName, ["th-TH"])) {
+      invalid["lastName"] = true;
+    }
+
+    if (
+      !validator.isNumeric(input.sid) ||
+      !validator.isLength(input.sid, { min: 13, max: 13 })
+    ) {
+      invalid["sid"] = true;
+    }
 
     if (Object.values(invalid).indexOf(true) > -1) {
       setInputError(invalid);

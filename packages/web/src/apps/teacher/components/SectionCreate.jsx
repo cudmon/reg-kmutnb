@@ -1,3 +1,4 @@
+import validator from "validator";
 import { getSubjects } from "../services/subject";
 import { createSection } from "../services/section";
 import { useContext, useEffect, useState } from "react";
@@ -138,7 +139,7 @@ const DialogAction = ({ onClose, onSubmit }) => {
 };
 
 export default function SectionCreate() {
-  const context = useContext(SectionContext);
+  const { sync, flash } = useContext(SectionContext);
   const [opened, setOpened] = useState(false);
   const [input, setInput] = useState({
     subject: "",
@@ -184,6 +185,18 @@ export default function SectionCreate() {
       }
     });
 
+    if (Number(input.section) < 1) {
+      invalid["section"] = true;
+    }
+
+    if (!/^([0-1]?[0-9]|2[0-4]):([0-5][0-9])?$/.test(input.start)) {
+      invalid["start"] = true;
+    }
+
+    if (!/^([0-1]?[0-9]|2[0-4]):([0-5][0-9])?$/.test(input.end)) {
+      invalid["end"] = true;
+    }
+
     if (Object.values(invalid).indexOf(true) > -1) {
       setInputError(invalid);
     } else {
@@ -197,16 +210,29 @@ export default function SectionCreate() {
       });
 
       if (res) {
-        context.sync();
+        sync();
+
+        flash("info", "เพิ่มตอนเรียนสำเร็จ");
+
         dialog.close();
-        context.flash("info", "เพิ่มตอนเรียนสำเร็จ");
+        setInputError({
+          subject: false,
+          day: false,
+          section: false,
+          start: false,
+          end: false,
+        });
         setInput({ subject: "", day: "", section: "", start: "", end: "" });
       } else {
         dialog.close();
-        context.flash(
-          "error",
-          "มีบางอย่างผิดพลาด โปรดลองใหม่อีกครั้งในภายหลัง"
-        );
+        flash("error", "มีบางอย่างผิดพลาด โปรดลองใหม่อีกครั้งในภายหลัง");
+        setInputError({
+          subject: false,
+          day: false,
+          section: false,
+          start: false,
+          end: false,
+        });
         setInput({ subject: "", day: "", section: "", start: "", end: "" });
       }
     }
