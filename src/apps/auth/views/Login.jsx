@@ -1,86 +1,86 @@
 import { useState } from "react";
-import { http } from "@/plugins/http";
 import { useAuth } from "@/store/auth";
+import { login } from "../services/login";
+import { useTitle } from "@/hooks/useTitle";
 import { useNavigate } from "react-router-dom";
-import { Card, CardContent } from "@mui/material";
 
 import LoginForm from "../components/LoginForm";
 import LoginError from "../components/LoginError";
 import LoginAlert from "../components/LoginAlert";
 import LoginTitle from "../components/LoginTitle";
+import LoginContainer from "../components/LoginContainer";
 
 export default function LoginBody() {
+  // Set page title
+  useTitle("Login");
+
+  // Router navigator
   const navigate = useNavigate();
 
-  const [isValid, setIsValid] = useState(true);
+  // Component state
   const [isEmpty, setIsEmpty] = useState(false);
   const [isError, setIsError] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [isInValid, setIsInValid] = useState(false);
 
+  // Call auth store
   const store = useAuth((state) => state.update);
 
-  const login = async (username, password) => {
-    setLoading(true);
-
+  const handler = async (username, password) => {
+    // Check is value empty
     if (!username || !password) {
+      return setIsEmpty(true);
+    }
+
+    // Login loading state
+    setLoading(true);
+    setIsEmpty(false);
+    setIsInValid(false);
+
+    // Login
+    const profile = await login(username, password);
+
+    // Login successfully
+    if (!profile.error) {
+      store(profile);
+      navigate("/");
       setLoading(false);
-      setIsEmpty(true);
+
+      return true;
+    }
+
+    // Wrong username or password
+    if (profile.error.code === 403) {
+      setLoading(false);
+      setIsInValid(true);
 
       return false;
     }
 
-    setIsValid(true);
-    setIsEmpty(false);
-
-    try {
-      const { data } = await http().post("/auth/login", {
-        username,
-        password,
-      });
-
-      store({
-        role: data.role,
-        token: data.accessToken,
-        name: data.name,
-      });
-
-      navigate("/");
-
-      setLoading(false);
-    } catch (e) {
-      if (e.response.status === 403) {
-        setLoading(false);
-        setIsValid(false);
-
-        return false;
-      }
-
-      setLoading(false);
-      setIsError(true);
-    }
+    // Exception for error
+    setLoading(false);
+    setIsError(true);
   };
 
   return (
-    <Card elevation={2} sx={{ paddingBottom: 2 }}>
-      <CardContent sx={{ paddingInline: 4 }}>
-        <LoginTitle />
-        <LoginAlert
-          message="ชื่อผู้ใช้หรือรหัสผ่านไม่ถูกต้อง"
-          open={!isValid}
-          onClose={() => setIsValid(true)}
-        />
-        <LoginAlert
-          open={isEmpty}
-          message="กรุณากรอกข้อมูลให้ครบถ้วน"
-          onClose={() => setIsEmpty(false)}
-        />
-        <LoginForm
-          loading={loading}
-          error={!isValid || isEmpty}
-          onLogin={login}
-        />
-        <LoginError open={isError} onClose={() => setIsError(false)} />
-      </CardContent>
-    </Card>
+    <LoginContainer>
+      <LoginTitle />
+      <LoginAlert
+        open={isInValid}
+        message="ชื่อผู้ใช้หรือรหัสผ่านไม่ถูกต้อง"
+        onClose={() => setIsInValid(false)}
+      />
+      <LoginAlert
+        open={isEmpty}
+        message="กรุณากรอกข้อมูลให้ครบถ้วน"
+        onClose={() => setIsEmpty(false)}
+      />
+      <LoginForm
+        loading={loading}
+        onLogin={handler}
+        error={isInValid || isEmpty}
+      />
+      <LoginError open={isError} onClose={() => setIsError(false)} />
+    </LoginContainer>
   );
 }

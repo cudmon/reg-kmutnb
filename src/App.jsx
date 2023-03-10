@@ -22,20 +22,19 @@ export default function App() {
           <Route path="/login" element={<AuthLoginPage />} />
         </Route>
 
-        {role === "student" ? (
+        {role === "student" && (
           <Route element={<StudentLayout />}>
             <Route path="/" element={<StudentHomePage />} />
             <Route path="/registration" element={<StudentRegisPage />} />
           </Route>
-          
-        ) : null}
+        )}
 
-        {role === "teacher" ? (
+        {role === "teacher" && (
           <Route element={<TeacherLayout />}>
             <Route path="/" element={<TeacherHomePage />} />
             <Route path="/student" element={<TeacherStudentPage />} />
           </Route>
-        ) : null}
+        )}
 
         {role ? (
           <Route path="*" element={<Navigate to="/" />} />

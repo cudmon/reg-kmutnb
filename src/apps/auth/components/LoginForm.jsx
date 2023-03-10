@@ -1,14 +1,10 @@
 import { useState } from "react";
-import { Button, Stack, TextField } from "@mui/material";
 import { LoadingButton } from "@mui/lab";
+import { Stack, TextField } from "@mui/material";
 
 export default function LoginForm({ loading, error, onLogin }) {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
-
-  const handleLogin = () => {
-    onLogin(username, password);
-  };
 
   return (
     <Stack component="form" spacing={4} onSubmit={(e) => e.preventDefault()}>
@@ -33,7 +29,7 @@ export default function LoginForm({ loading, error, onLogin }) {
         type="submit"
         variant="contained"
         loading={loading}
-        onClick={handleLogin}
+        onClick={() => onLogin(username, password)}
       >
         เข้าสู่ระบบ
       </LoadingButton>

@@ -3,30 +3,35 @@ import { blue, blueGrey, teal, deepOrange } from "@mui/material/colors";
 
 const MODE = "light";
 
-const theme = {
+const base = {
   components: {
     MuiButtonBase: {
       defaultProps: {
         disableTouchRipple: true,
       },
     },
+
     MuiButton: {
       defaultProps: {
         disableElevation: true,
       },
     },
+
     MuiAppBar: {
       defaultProps: {
         elevation: 0,
       },
     },
   },
+
   shape: {
     borderRadius: 3,
   },
+
   typography: {
     fontFamily: "Kanit",
   },
+
   transitions: {
     duration: {
       shortest: 125,
@@ -41,24 +46,25 @@ const theme = {
 };
 
 export const studentTheme = createTheme({
+  ...base,
   palette: {
     primary: deepOrange,
     secondary: blueGrey,
     mode: MODE,
   },
-  ...theme,
 });
 
 export const teacherTheme = createTheme({
+  ...base,
   palette: {
     primary: teal,
     secondary: blueGrey,
     mode: MODE,
   },
-  ...theme,
 });
 
 export const loginTheme = createTheme({
+  ...base,
   palette: {
     primary: blue,
     secondary: blueGrey,
@@ -67,5 +73,4 @@ export const loginTheme = createTheme({
       default: "#f1f5f9",
     },
   },
-  ...theme,
 });
