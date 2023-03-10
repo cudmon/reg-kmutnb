@@ -68,12 +68,18 @@ export default function TeacherHomePage() {
       headerName: "เริ่ม",
       align: "center",
       headerAlign: "center",
+      valueGetter: ({ row }) => {
+        return row.section_start.substring(0, row.section_start.length - 3);
+      },
     },
     {
       field: "section_end",
       headerName: "เสร็จสิ้น",
       align: "center",
       headerAlign: "center",
+      valueGetter: ({ row }) => {
+        return row.section_end.substring(0, row.section_end.length - 3);
+      },
     },
     {
       field: "action",
@@ -87,8 +93,8 @@ export default function TeacherHomePage() {
             id={row.section_id}
             subject={row.subject_name}
             section={row.section_number}
-            start={row.section_start}
-            end={row.section_end}
+            start={row.section_start.substring(0, row.section_start.length - 3)}
+            end={row.section_end.substring(0, row.section_end.length - 3)}
             day={row.section_day}
           />
           <SectionDelete

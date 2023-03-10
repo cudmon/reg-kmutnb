@@ -64,7 +64,10 @@ const columns = [
     headerClassName: "hideRightSeparator",
     headerAlign: "center",
     valueGetter: ({ row }) => {
-      return `${row.section_start} - ${row.section_end}`;
+      return `${row.section_start.substring(
+        0,
+        row.section_start.length - 3
+      )} - ${row.section_end.substring(0, row.section_end.length - 3)}`;
     },
   },
 ];

@@ -42,7 +42,7 @@ export const updateSection = async (id, data) => {
 
   try {
     return await http(token).patch(`/sections/${id}`, data);
-  } catch {
+  } catch (e) {
     if (e.response.status === 403) {
       return 403;
     }

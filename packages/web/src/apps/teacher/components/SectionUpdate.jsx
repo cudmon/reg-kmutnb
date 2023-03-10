@@ -189,7 +189,7 @@ export default function SectionUpdate({
         section_day: Number(input.day),
       });
 
-      if (res) {
+      if (res !== 403) {
         context.sync();
         dialog.close();
         context.flash("info", "แก้ไขตอนเรียนสำเร็จ");
@@ -210,6 +210,14 @@ export default function SectionUpdate({
           "มีบางอย่างผิดพลาด โปรดลองใหม่อีกครั้งในภายหลัง"
         );
       }
+
+      setInputError({
+        subject: false,
+        day: false,
+        section: false,
+        start: false,
+        end: false,
+      });
     }
   };
 
