@@ -13,10 +13,14 @@ import {
 } from "@mui/material";
 
 const forms = [
-  { label: "คำนำหน้า", name: "prefix" },
-  { label: "ชื่อ", name: "firstName" },
-  { label: "สกุล", name: "lastName" },
-  { label: "รหัสนักศึกษา", name: "sid" },
+  { label: "คำนำหน้า", name: "prefix", error: "กรุณาใส่คำนำหน้า (ภาษาไทย)" },
+  { label: "ชื่อ", name: "firstName", error: "กรุณาใส่ชื่อจริง (ภาษาไทย)" },
+  { label: "สกุล", name: "lastName", error: "กรุณาใส่นามสกุล (ภาษาไทย)" },
+  {
+    label: "รหัสนักศึกษา",
+    name: "sid",
+    error: "กรุณาใส่รหัสนักศึกษา (13 หลัก)",
+  },
 ];
 
 const DialogForm = ({ error, value, onChange }) => {
@@ -34,6 +38,7 @@ const DialogForm = ({ error, value, onChange }) => {
           name={item.name}
           error={error[item.name]}
           required
+          helperText={error[item.name] && item.error}
         />
       ))}
     </>

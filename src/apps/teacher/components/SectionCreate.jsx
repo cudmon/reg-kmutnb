@@ -9,6 +9,7 @@ import {
   DialogContent,
   DialogTitle,
   FormControl,
+  FormHelperText,
   InputLabel,
   MenuItem,
   Select,
@@ -53,10 +54,11 @@ const DialogForm = ({ error, value, onChange }) => {
             </MenuItem>
           ))}
         </Select>
+        {error.subject && <FormHelperText>กรุณาเลือกวิชา</FormHelperText>}
       </FormControl>
       <TextField
         size="small"
-        value={value.number}
+        value={value.section}
         onChange={onChange}
         fullWidth
         margin="normal"
@@ -66,6 +68,7 @@ const DialogForm = ({ error, value, onChange }) => {
         inputProps={{ min: "1" }}
         error={error.section}
         required
+        helperText={error.section && "กรุณาใส่ตอนเรียน (ตัวเลขจำนวนเต็ม > 0)"}
       />
       <FormControl
         error={error.day}
@@ -91,6 +94,7 @@ const DialogForm = ({ error, value, onChange }) => {
           <MenuItem value={6}>ศุกร์</MenuItem>
           <MenuItem value={7}>เสาร์</MenuItem>
         </Select>
+        {error.day && <FormHelperText>กรุณาเลือกวัน</FormHelperText>}
       </FormControl>
       <TextField
         name="start"
@@ -103,6 +107,7 @@ const DialogForm = ({ error, value, onChange }) => {
         label="เริ่ม"
         error={error.start}
         required
+        helperText={error.start && "กรุณาใส่เวลาเริ่มสอน (ชั่วโมง:นาที)"}
       />
       <TextField
         name="end"
@@ -115,6 +120,7 @@ const DialogForm = ({ error, value, onChange }) => {
         label="สิ้นสุด"
         error={error.end}
         required
+        helperText={error.end && "กรุณาใส่เวลาเลิกสอน (ชั่วโมง:นาที)"}
       />
     </>
   );
@@ -161,6 +167,13 @@ export default function SectionCreate() {
     close: () => {
       setOpened(false);
       setInput({
+        subject: "",
+        day: "",
+        section: "",
+        start: "",
+        end: "",
+      });
+      setInputError({
         subject: "",
         day: "",
         section: "",
