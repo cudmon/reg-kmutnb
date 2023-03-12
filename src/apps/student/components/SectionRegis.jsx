@@ -45,6 +45,13 @@ const DialogForm = ({ error, value, onChange }) => {
   }, []);
 
   useEffect(() => {
+    onChange({
+      target: {
+        name: "section",
+        value: "",
+      },
+    });
+
     (async () => {
       const secs = [];
       const { section } = await getSections();
@@ -56,12 +63,10 @@ const DialogForm = ({ error, value, onChange }) => {
           }
         });
 
-        console.log(secs);
-
         setSections(secs);
       }
     })();
-  }, [isSubjectSelected]);
+  }, [value.subject]);
 
   const handleChange = (event) => {
     onChange(event);
