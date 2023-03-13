@@ -222,7 +222,18 @@ export default function SectionCreate() {
         semester_id: 1,
       });
 
-      if (res) {
+      if (res === 409) {
+        dialog.close();
+        flash("warning", "ตอนเรียนนี้ถูกสร้างไปแล้ว");
+        setInputError({
+          subject: false,
+          day: false,
+          section: false,
+          start: false,
+          end: false,
+        });
+        setInput({ subject: "", day: "", section: "", start: "", end: "" });
+      } else if (res) {
         sync();
 
         flash("info", "เพิ่มตอนเรียนสำเร็จ");

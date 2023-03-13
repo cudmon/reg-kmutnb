@@ -32,7 +32,11 @@ export const createSection = async (data) => {
 
   try {
     return await http(token).post("/sections", data);
-  } catch {
+  } catch (e) {
+    if (e.response.status === 409) {
+      return 409;
+    }
+
     return false;
   }
 };
