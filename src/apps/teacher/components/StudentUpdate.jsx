@@ -136,7 +136,10 @@ export default function StudentUpdate({ id, sid, fname, lname, prefix }) {
         lastName: input.lastName,
       });
 
-      if (res) {
+      if (res === 400) {
+        dialog.close();
+        context.flash("warning", "รหัสนักศึกษาไม่ถูกต้อง");
+      } else if (res) {
         context.sync();
         dialog.close();
         context.flash("info", "แก้ไขนักเรียนสำเร็จ");

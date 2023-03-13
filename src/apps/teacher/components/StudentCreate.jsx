@@ -142,7 +142,11 @@ export default function StudentCreate() {
         program_id: 1,
       });
 
-      if (res) {
+      if (res === 400) {
+        dialog.close();
+        context.flash("warning", "รหัสนักศึกษาไม่ถูกต้อง");
+        setInput({ sid: "", firstName: "", lastName: "", prefix: "" });
+      } else if (res) {
         context.sync();
         dialog.close();
         context.flash("info", "เพิ่มนักศึกษาสำเร็จ");
