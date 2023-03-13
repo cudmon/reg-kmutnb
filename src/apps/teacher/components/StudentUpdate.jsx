@@ -15,11 +15,6 @@ const forms = [
   { label: "คำนำหน้า", name: "prefix", error: "กรุณาใส่คำนำหน้า (ภาษาไทย)" },
   { label: "ชื่อ", name: "firstName", error: "กรุณาใส่ชื่อจริง (ภาษาไทย)" },
   { label: "สกุล", name: "lastName", error: "กรุณาใส่นามสกุล (ภาษาไทย)" },
-  {
-    label: "รหัสนักศึกษา",
-    name: "sid",
-    error: "กรุณาใส่รหัสนักศึกษา (13 หลัก)",
-  },
 ];
 
 const DialogForm = ({ error, value, onChange }) => {
@@ -101,7 +96,7 @@ export default function StudentUpdate({ id, sid, fname, lname, prefix }) {
     [
       { label: "คำนำหน้า", name: "prefix" },
       { label: "ชื่อ", name: "firstName" },
-      { label: "รหัสนักศึกษา", name: "sid" },
+      { label: "นามสกุล", name: "lastName" },
     ].map((form) => {
       if (!input[form.name]) {
         invalid[form.name] = true;
@@ -136,10 +131,7 @@ export default function StudentUpdate({ id, sid, fname, lname, prefix }) {
         lastName: input.lastName,
       });
 
-      if (res === 400) {
-        dialog.close();
-        context.flash("warning", "รหัสนักศึกษาไม่ถูกต้อง");
-      } else if (res) {
+      if (res) {
         context.sync();
         dialog.close();
         context.flash("info", "แก้ไขนักเรียนสำเร็จ");

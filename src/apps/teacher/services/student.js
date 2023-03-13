@@ -45,10 +45,6 @@ export const updateStudent = async (id, data) => {
   try {
     return await http(token).patch(`/students/${id}`, data);
   } catch (e) {
-    if (e.response.status === 400) {
-      return 400;
-    }
-
     return false;
   }
 };
